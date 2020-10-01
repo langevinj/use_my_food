@@ -12,6 +12,54 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+
+class Rating(db.Model):
+    """Recipe rating class"""
+
+    __tablename__ = "rating"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    rating = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='cascade')
+    )
+
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey('recipes.id', ondelete='cascade')
+    )
+
+
+class Favorites(db.Model):
+    """Favorites class"""
+
+    __tablename__ = "favorites"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='cascade')
+    )
+
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey('recipes.id', ondelete='cascade')
+    )
+
+
 class User(db.Model):
     """User in system"""
 
@@ -43,6 +91,14 @@ class User(db.Model):
         'Recipe',
         secondary="favorites"
     )
+
+    # ratings = db.relationship(
+    #     "User",
+    #     secondary="rating",
+    #     primaryjoin=(Rating.user_id == id),
+    #     secondaryjoin=(Rating.recipe_id == Recipe.id)
+    # )
+
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -82,29 +138,6 @@ class User(db.Model):
         
         return False
     
-
-
-class Favorites(db.Model):
-    """Favorites class"""
-
-    __tablename__ = "favorites"
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
-    )
-
-    recipe_id = db.Column(
-        db.Integer,
-        db.ForeignKey('recipes.id', ondelete='cascade')
-    )
-    
-    
 class Recipe(db.Model):
     """Recipe class"""
 
@@ -120,8 +153,21 @@ class Recipe(db.Model):
         nullable=False
     )
 
+    recipe_url = db.Column(
+        db.String,
+        nullable=False
+    )
+
     favorited_by = db.relationship(
         'User',
         secondary='favorites'
     )
+
+    # ratings = db.relationship(
+    #     "Recipe",
+    #     secondary="rating",
+    #     primaryjoin=(Rating.recipe_id == id),
+    #     secondaryjoin=(Rating.user_id == User.id)
+    # )
+
 

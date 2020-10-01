@@ -108,11 +108,25 @@ def login():
     
     return render_template('users/login.html', form=form)
 
+##############################################################
+# Basic user routes:
+
+@app.route('/users/<int:user_id>')
+def user_details(user_id):
+    """Show a users detail page"""
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template("users/details.html", user=user)
 
 
+@app.route('/users/<int:user_id>/favorites')
+def user_favorites(user_id):
+    """Display a list of the users favorites"""
 
-
-
+    user = User.query.get_or_404(user_id)
+    
+    return render_template('users/favorites.html', user=user)
 
 
 
