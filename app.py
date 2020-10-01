@@ -5,6 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from secret import API_SECRET_KEY
 from models import db, connect_db, User, Recipe
 from sqlalchemy.exc import IntegrityError
+from forms import UserAddForm
 
 #remove this eventually
 CURR_USER_KEY = "curr_user"
@@ -56,6 +57,7 @@ def signup():
     """
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+        
     form = UserAddForm()
 
     if form.validate_on_submit():
