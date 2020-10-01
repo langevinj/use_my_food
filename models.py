@@ -12,6 +12,7 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+DEFAULT_IMG_URL = "https://www.tastefullysimple.com/_/media/images/recipe-default-image.png"
 
 class Rating(db.Model):
     """Recipe rating class"""
@@ -156,6 +157,12 @@ class Recipe(db.Model):
     recipe_url = db.Column(
         db.String,
         nullable=False
+    )
+
+    image_url = db.Column(
+        db.String,
+        nullable=False,
+        default=DEFAULT_IMG_URL
     )
 
     favorited_by = db.relationship(

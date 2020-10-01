@@ -2,4 +2,12 @@
 {% block title %}Use My Food{% endblock %}
 
 {% block content %}
+
+<form id="search-by-ingredient">
+    <label for="searchIngredients">Search for recipes by ingredient(s) <em>(separate multiple ingredients with a comma and space):</em></label>
+    <br>
+    <textarea id="searchIngredients" placeholder="Ex. Onion, bell pepper" name="searchIngredients"></textarea> 
+    <br>
+    <button type="submit">Search</button>
+</form>
 {% endblock %}
