@@ -25,7 +25,7 @@ class User(db.Model):
     username = db.Column(
         db.Text,
         nullable=False,
-        unqiue=True,
+        unique=True,
     )
 
     email = db.Column(
@@ -84,22 +84,44 @@ class User(db.Model):
     
 
 
-    class Favorites(db.Model):
-        """Favorites class"""
+class Favorites(db.Model):
+    """Favorites class"""
 
-        __tablename__ = "favorites"
+    __tablename__ = "favorites"
 
-        id = db.Column(
-            db.Integer,
-            primary_key=True
-        )
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-        user_id = db.Column(
-            db.Integer,
-            db.ForeignKey('users.id', ondelete='cascade')
-        )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='cascade')
+    )
 
-        recipe_id = db.Column(
-            db.Integer,
-            db.ForeignKey('recipes.id', ondelete='cascade')
-        )
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey('recipes.id', ondelete='cascade')
+    )
+    
+    
+class Recipe(db.Model):
+    """Recipe class"""
+
+    __tablename__ = "recipes"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    favorited_by = db.relationship(
+        'User',
+        secondary='favorites'
+    )
+
