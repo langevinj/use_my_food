@@ -39,12 +39,10 @@ class User(db.Model):
         nullable=False,
     )
 
-    # favorites = db.relationship(
-    #     "User",
-    #     secondary = "favorites",
-    #     primaryjoin=(Favorites.user_id == id),
-    #     secondaryjoin=(Favorites.)
-    # )
+    favorites = db.relationship(
+        'Recipe',
+        secondary="favorites"
+    )
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -83,3 +81,25 @@ class User(db.Model):
                 return user 
         
         return False
+    
+
+
+    class Favorites(db.Model):
+        """Favorites class"""
+
+        __tablename__ = "favorites"
+
+        id = db.Column(
+            db.Integer,
+            primary_key=True
+        )
+
+        user_id = db.Column(
+            db.Integer,
+            db.ForeignKey('users.id', ondelete='cascade')
+        )
+
+        recipe_id = db.Column(
+            db.Integer,
+            db.ForeignKey('recipes.id', ondelete='cascade')
+        )
