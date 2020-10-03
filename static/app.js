@@ -25,7 +25,8 @@ $('#search-by-ingredient').on("submit", async function (evt) {
 
     //get recipes based on input ingredients
     let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${config["apiKey"]}`)
-    console.log(res)
+    let recipeInfo = await getRecipeInfo(res)
+    listRecipes(recipeInfo)
 })
 
 function separateIngredients(ingredients){
@@ -33,4 +34,62 @@ function separateIngredients(ingredients){
     let loweredIng = ingredients.toLowerCase()
     let array = loweredIng.split(", ")
     return array
+}
+
+
+//gets extended information on all recipes passed in as 1 object
+async function getRecipeInfo(recipes){
+    let allIds = []
+    let x = recipes.data.length
+
+    for(let i=0; i < x; i++){
+        let id = recipes.data[i].id
+        allIds.push(id)
+    }
+    
+    let info;
+    if (allIds.length == 1){
+        info = await axios.get(`https://api.spoonacular.com/recipes/${allIds[0]}/information?apiKey=${config["apiKey"]}`)
+    } else {
+        let ids = allIds.join(",")
+        info = await axios.get(`https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${config["apiKey"]}`)
+    }
+    return info
+}
+
+//grab recipe info and append the list to the page
+function listRecipes(recipes) {
+    $('#recipeList').empty()
+    let x = recipes.data.length;
+
+    if(x > 1 && x != undefined){
+        for(let i=0; i < x; i++){
+            let id = recipes.data[i].id
+            let title = recipes.data[i].title
+            let image = recipes.data[i].image
+            let sourceUrl = recipes.data[i].sourceUrl
+            let vegetarian = recipes.data[i].vegetarian
+            let vegan = recipes.data[i].vegan
+            appendRecipe(id, title, image, sourceUrl, vegetarian, vegan)
+        }
+    }
+    
+
+}
+
+//appends recipes to list
+function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
+    let $recipeList = $('#recipeList')
+
+    let tempRecipeHTML = `<li id="${id}"><a href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><br><img src=${image}></li>`
+
+    $recipeList.append(tempRecipeHTML)
+
+    // if(isVegetarian){
+    //     $(`#${id} .vegetarian`).removeClass("hidden")
+    // }
+
+    // if (isVegan){
+    //     $(`#${id} .vegan`).removeClass("hidden")
+    // }
 }

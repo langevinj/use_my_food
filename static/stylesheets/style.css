@@ -1,0 +1,15 @@
+.vegan {
+    background-color: orange;
+    border-radius: 5px;
+    border: 1px solid orange;
+}
+
+.vegetarian {
+    background-color: teal;
+    border-radius: 5px;
+    border: 1px solid teal;
+}
+
+.hidden{
+    display: none;
+}
