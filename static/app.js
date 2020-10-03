@@ -72,9 +72,15 @@ function listRecipes(recipes) {
             let vegan = recipes.data[i].vegan
             appendRecipe(id, title, image, sourceUrl, vegetarian, vegan)
         }
+    } else {
+        let id = recipes.data.id
+        let title = recipes.data.title
+        let image = recipes.data.image
+        let sourceUrl = recipes.data.sourceUrl
+        let vegetarian = recipes.data.vegetarian
+        let vegan = recipes.data.vegan
+        appendRecipe(id, title, image, sourceUrl, vegetarian, vegan)
     }
-    
-
 }
 
 //appends recipes to list
@@ -85,11 +91,11 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
 
     $recipeList.append(tempRecipeHTML)
 
-    // if(isVegetarian){
-    //     $(`#${id} .vegetarian`).removeClass("hidden")
-    // }
+    if(isVegetarian){
+        $(`#${id} .vegetarian`).removeClass("hidden")
+    }
 
-    // if (isVegan){
-    //     $(`#${id} .vegan`).removeClass("hidden")
-    // }
+    if (isVegan){
+        $(`#${id} .vegan`).removeClass("hidden")
+    }
 }
