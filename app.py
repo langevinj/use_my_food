@@ -129,6 +129,20 @@ def user_favorites(user_id):
     return render_template('users/favorites.html', user=user)
 
 
+@app.route('/users/delete', methods=["POST"])
+def delete_user():
+    """Delete a user's account"""
+
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+    
+    do_logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect('/signup')
+
 ##############################################################
 
 
