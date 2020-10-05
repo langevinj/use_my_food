@@ -22,7 +22,6 @@ $('#search-by-ingredient').on("submit", async function (evt) {
 
     let ingArray = separateIngredients(ingredients);
     let ingStr = ingArray.join(",+")
-
     //get recipes based on input ingredients
     let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${config["apiKey"]}`)
     let recipeInfo = await getRecipeInfo(res)
