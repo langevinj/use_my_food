@@ -148,14 +148,14 @@ def delete_user():
 
 @app.route('/users/curruser/favorites')
 def return_list_favorites():
-    """Return a list of the current user's favorites' ids"""
+    """Return a list of the current user's favorites' recipe ids"""
     favIds = []
     favorites = g.user.favorites
 
     for favorite in favorites:
         favIds.append(favorite.recipe_id)
     
-    return favIds
+    return {"favIds":favIds}
 
 @app.route('/users/toggle_favorite/', methods=["POST"])
 def add_favorite():
@@ -175,7 +175,6 @@ def add_favorite():
 def homepage():
     """Show homepage, will need to have validation added"""
     return render_template('home.html')
-
 
 
 @app.errorhandler(404)

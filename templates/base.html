@@ -12,18 +12,37 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
     <link rel="stylesheet" href="/static/stylesheets/style.css">
     <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/stylesheets/theme2.css">
 </head>
 <body>
 
-<nav class="navbar navbar-expand">
-    <div class="container-fluid">
-        <div class="navbar-header">
+<nav class="navbar navbar-expand-sm bg-secondary">
+    <!-- <div class="container-fluid"> -->
+    <a href="/" class="navbar-brand">
+        <!-- <img src="/static/images/8-bit-carrort.jpg" alt="logo"> -->
+        <span>Use My Food</span>
+    </a>
+        <!-- <div class="navbar-header">
             <a href="/" class="navbar-brand">
                 <img src="/static/images/8-bit-carrort.jpg" alt="logo">
                 <span>Use My Food</span>
             </a>
+        </div> -->
+
+        <div class="collapse nav-bar collapse">
+            <ul class="navbar-nav">
+                {% if g.user %}
+                <li class="nav-item active">
+                    <a href="/users/{{ g.user.id }}" class="nav-link text-dark">{{ g.user.username }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/{{ g.user.id }}/favorites">Favorites</a>
+                </li>
+                {% endif %}
+            </ul>
+
         </div>
-        <ul class="nav navbar-nav navbar-right">
+        <!-- <ul class="nav navbar-nav navbar-right">
             {% if request.endpoint != None %}
             <li></li>
             {% endif %}
@@ -32,14 +51,11 @@
             <li><a href="/signup">Sign Up</a></li>
             <li><a href="login">Login</a></li>
             {% else %}
-            <li>
-                <a href="/users/{{ g.user.id }}">{{ g.user.username }}</a>
-            </li>
-            <li><a href="/users/{{ g.user.id }}/favorites">Favorites</a></li>
-            <li><a href="logout">Logout</a></li>
+            <li><a href="logout" class="text-muted">Logout</a></li>
             {% endif %}
-        </ul>
-    </div>
+        </ul> -->
+        
+    <!-- </div> -->
 </nav>
 
 <div class="container">
