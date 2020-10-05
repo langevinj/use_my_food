@@ -22,6 +22,7 @@ $('#search-by-ingredient').on("submit", async function (evt) {
 
     let ingArray = separateIngredients(ingredients);
     let ingStr = ingArray.join(",+")
+
     //get recipes based on input ingredients
     let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${config["apiKey"]}`)
     let recipeInfo = await getRecipeInfo(res)
@@ -86,7 +87,7 @@ function listRecipes(recipes) {
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><br><img src=${image}></li>`
+    let tempRecipeHTML = `<li id="${id}"><a href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button id="favoriteButton"></button><br><img src=${image}></li>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -97,4 +98,26 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     if (isVegan){
         $(`#${id} .vegan`).removeClass("hidden")
     }
+
+    addFavoriteButton()
 }
+
+//function that adds a favorite button for a recipe
+function addFavoriteButton(){
+    // let favoriteArr = await axious.get(`${BASE_URL}/users/curruser/favorites`);
+
+    $('#favoriteButton').append('<i class="far fa-star"> </i>')
+
+    // console.log(favoriteArr)
+}
+
+$('body').on("click", "#favoriteButton", async function(evt){
+    //toggle a favorite when clicked
+
+    evt.preventDefault();
+    let recipeId = evt.target.parentNode.id
+
+    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {recipe_id: recipeId})
+    console.log(res["data"])
+})
+

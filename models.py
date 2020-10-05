@@ -14,30 +14,30 @@ def connect_db(app):
 
 DEFAULT_IMG_URL = "https://www.tastefullysimple.com/_/media/images/recipe-default-image.png"
 
-class Rating(db.Model):
-    """Recipe rating class"""
+# class Rating(db.Model):
+#     """Recipe rating class"""
 
-    __tablename__ = "rating"
+#     __tablename__ = "rating"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True
+#     )
 
-    rating = db.Column(
-        db.Integer,
-        nullable=False
-    )
+#     rating = db.Column(
+#         db.Integer,
+#         nullable=False
+#     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
-    )
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='cascade')
+#     )
 
-    recipe_id = db.Column(
-        db.Integer,
-        db.ForeignKey('recipes.id', ondelete='cascade')
-    )
+#     recipe_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('recipes.id', ondelete='cascade')
+#     )
 
 
 class Favorites(db.Model):
@@ -56,8 +56,8 @@ class Favorites(db.Model):
     )
 
     recipe_id = db.Column(
-        db.Integer,
-        db.ForeignKey('recipes.id', ondelete='cascade')
+        db.Integer, 
+        nullable=False
     )
 
 
@@ -89,8 +89,7 @@ class User(db.Model):
     )
 
     favorites = db.relationship(
-        'Recipe',
-        secondary="favorites"
+        "Favorites"
     )
 
     # ratings = db.relationship(
@@ -139,36 +138,36 @@ class User(db.Model):
         
         return False
     
-class Recipe(db.Model):
-    """Recipe class"""
+# class Recipe(db.Model):
+#     """Recipe class"""
 
-    __tablename__ = "recipes"
+#     __tablename__ = "recipes"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True
+#     )
 
-    name = db.Column(
-        db.Text,
-        nullable=False
-    )
+#     name = db.Column(
+#         db.Text,
+#         nullable=False
+#     )
 
-    recipe_url = db.Column(
-        db.String,
-        nullable=False
-    )
+#     recipe_url = db.Column(
+#         db.String,
+#         nullable=False
+#     )
 
-    image_url = db.Column(
-        db.String,
-        nullable=False,
-        default=DEFAULT_IMG_URL
-    )
+#     image_url = db.Column(
+#         db.String,
+#         nullable=False,
+#         default=DEFAULT_IMG_URL
+#     )
 
-    favorited_by = db.relationship(
-        'User',
-        secondary='favorites'
-    )
+    # favorited_by = db.relationship(
+    #     'User',
+    #     secondary='favorites'
+    # )
 
     # ratings = db.relationship(
     #     "Recipe",
@@ -178,3 +177,30 @@ class Recipe(db.Model):
     # )
 
 
+###########
+#Helper methods
+
+def toggle_favorites(recipe_id, user_id):
+    """Toggle a favorite for a user on or off by adding or deleting it to the favorite table"""
+    all_favorites = user_favorites_list(user_id)
+    all_favorites_id = []
+    
+    for fav in all_favorites:
+        all_favorites_id.append(fav.recipe_id)
+    
+    if recipe_id in all_favorites_id:
+        recipe = Favorites.query.filter(Favorites.recipe_id==recipe_id).first()
+        db.session.delete(recipe)
+        db.session.commit()
+        return "unfavorited"
+    else:
+        newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
+        db.session.add(newFav)
+        db.session.commit()
+        return "favorited"
+
+def user_favorites_list(user_id):
+    """Create a list of all the user's favorites"""
+
+    user = User.query.get(user_id)
+    return user.favorites

@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from secret import API_SECRET_KEY
-from models import db, connect_db, User, Recipe
+from models import db, connect_db, User, Favorites, toggle_favorites
 from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm
 
@@ -144,10 +144,29 @@ def delete_user():
     return redirect('/signup')
 
 ##############################################################
+#Basic favorites routes
 
+@app.route('/users/curruser/favorites')
+def return_list_favorites():
+    """Return a list of the current user's favorites' ids"""
+    favIds = []
+    favorites = g.user.favorites
 
+    for favorite in favorites:
+        favIds.append(favorite.recipe_id)
+    
+    return favIds
 
+@app.route('/users/toggle_favorite/', methods=["POST"])
+def add_favorite():
+    """Toggle a user's favorite, respond to JS with favorited or unfavorited"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+    recipe_id = request.json['recipe_id']
 
+    response = toggle_favorites(int(recipe_id), g.user.id)
+    
+    return response
 
 ###############################################################
 #Home page and error pages
