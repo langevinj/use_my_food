@@ -27,3 +27,25 @@
 .favoriteButton > i{
     pointer-events: none;
 }
+
+#search-forms{
+    border: 1px solid black;
+}
+
+.form-border {
+    box-sizing: border-box;
+}
+
+.side-by-side{
+    float: left;
+}
+
+#form-spacer{
+    margin: 10%;
+}
+
+@media (max-width: 1250px){
+    #form-spacer{
+        display: none;
+    }
+}
