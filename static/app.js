@@ -2,17 +2,25 @@ const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients
 
 const BASE_URL = "http://127.0.0.1:5000"
 
+// $('#search-for-recipes').click(function(evt){
+//     evt.preventDefault()
+//     let rad = $('input[type="radio"][name="optradio"]:checked').val()
+//     let val = parseInt(rad)
+//     let test = $('#searchIngredients').val();
+//     console.log(test)
+// })
 
-$('#search-by-ingredient').on("submit", async function (evt) {
+
+$('#search-for-recipes').click(async function (evt) {
     evt.preventDefault();
-
     //remove any previos error from leaving the field empty
     $('#emptyError').remove()
 
     //grab all search ingredients and number of desired recipes to return
     let ingredients = $('#searchIngredients').val();
-    let numRecipes = $('#recipeRadio input[type="radio"]:checked').val();
-
+    let val = $('input[type="radio"][name="optradio"]:checked').val()
+    let numRecipes = parseInt(val)
+    
     //create error if ingredient field is empty
     if (ingredients == ""){
         let emptyError = "<p class='text-danger' id='emptyError'>Please enter at least 1 ingredient</p>"
