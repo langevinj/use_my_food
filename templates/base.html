@@ -16,46 +16,37 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-sm bg-secondary">
-    <!-- <div class="container-fluid"> -->
-    <a href="/" class="navbar-brand">
-        <!-- <img src="/static/images/8-bit-carrort.jpg" alt="logo"> -->
-        <span>Use My Food</span>
-    </a>
-        <!-- <div class="navbar-header">
-            <a href="/" class="navbar-brand">
-                <img src="/static/images/8-bit-carrort.jpg" alt="logo">
-                <span>Use My Food</span>
-            </a>
-        </div> -->
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <a class="navbar-brand" href="/">Use My Food</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="collapse nav-bar collapse">
-            <ul class="navbar-nav">
-                {% if g.user %}
-                <li class="nav-item active">
-                    <a href="/users/{{ g.user.id }}" class="nav-link text-dark">{{ g.user.username }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/users/{{ g.user.id }}/favorites">Favorites</a>
-                </li>
-                {% endif %}
-            </ul>
-
-        </div>
-        <!-- <ul class="nav navbar-nav navbar-right">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
             {% if request.endpoint != None %}
             <li></li>
             {% endif %}
 
-            {% if not g.user %}
-            <li><a href="/signup">Sign Up</a></li>
-            <li><a href="login">Login</a></li>
-            {% else %}
-            <li><a href="logout" class="text-muted">Logout</a></li>
+            {% if g.user %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/users/{{ g.user.id }}">{{g.user.username}}</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/users/{{ g.user.id }}/favorites">Favorites</a>
+            </li>
             {% endif %}
-        </ul> -->
-        
-    <!-- </div> -->
+        </ul>
+        {% if not g.user %}
+        <a href="/signup">Signup</a>
+        <a href="login">Login</a>
+        {% endif %}
+
+        {% if g.user %}
+        <a href="logout" class="text-muted">Logout</a>
+        {% endif %}
+    </div>
 </nav>
 
 <div class="container">
