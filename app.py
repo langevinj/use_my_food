@@ -163,8 +163,11 @@ def add_favorite():
     if not g.user:
         flash("Access unauthorized", 'danger')
     recipe_id = request.json['recipe_id']
+    img_src = request.json['img_src']
+    name = request.json['name']
+    recipe_url = request.json['recipe_url']
 
-    response = toggle_favorites(int(recipe_id), g.user.id)
+    response = toggle_favorites(int(recipe_id), g.user.id, str(img_src), name, recipe_url)
     
     return response
 

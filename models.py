@@ -49,6 +49,11 @@ class Favorites(db.Model):
         db.Integer,
         primary_key=True
     )
+    
+    name = db.Column(
+        db.String,
+        nullable=False
+    )
 
     user_id = db.Column(
         db.Integer,
@@ -59,6 +64,18 @@ class Favorites(db.Model):
         db.Integer, 
         nullable=False
     )
+
+    img_url = db.Column(
+        db.String,
+        nullable=False
+    )
+
+    recipe_url = db.Column(
+        db.String,
+        nullable="False"
+    )
+
+
 
 
 class User(db.Model):
@@ -180,7 +197,7 @@ class User(db.Model):
 ###########
 #Helper methods
 
-def toggle_favorites(recipe_id, user_id):
+def toggle_favorites(recipe_id, user_id, img_src, name, recipe_url):
     """Toggle a favorite for a user on or off by adding or deleting it to the favorite table"""
     all_favorites = user_favorites_list(user_id)
     all_favorites_id = []
@@ -194,7 +211,7 @@ def toggle_favorites(recipe_id, user_id):
         db.session.commit()
         return "unfavorited"
     else:
-        newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
+        newFav = Favorites(user_id=user_id, recipe_id=recipe_id, img_url=img_src, name=name, recipe_url=recipe_url)
         db.session.add(newFav)
         db.session.commit()
         return "favorited"

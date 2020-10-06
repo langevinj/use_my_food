@@ -88,7 +88,7 @@ function listRecipes(recipes) {
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><br><img src=${image}></li>`
+    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><br><img src=${image}></li>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -101,12 +101,16 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     }
 }
 
- //toggle a favorite when clicked
+ //toggle a favorite when clicked, save the favorite if not already present
 $('body').on("click", ".favoriteButton", async function(evt){
     evt.preventDefault();
     let recipeId = evt.target.parentNode.id
     let clicked_button = $(`#${recipeId} > .favoriteButton`)
-    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {"recipe_id": recipeId})
+    let img_src = clicked_button.siblings('img').attr('src')
+    let recipe_url = $(`#${recipeId} .title`).prop('href')
+    let name = $(`#${recipeId} .title`).text()
+
+    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {"recipe_id": recipeId, "img_src": img_src, "name": name, "recipe_url": recipe_url})
     
     //switch the favorite button when clicking
     if(res.data == "unfavorited"){

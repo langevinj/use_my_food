@@ -5,9 +5,9 @@
 <h2>{{user.username}}'s Favorites:</h2>
 <ul>
     {% for favorite in user.favorites %}
-    <li>
-        <a href={{ favorite.recipe_url }} target="_blank">{{ favorite.name }}</a>
-        <img src={{ favorite.image_url }} alt="" class="card-hero">
+    <li><a href={{ favorite.recipe_url }} target="_blank">{{ favorite.name }}</a>
+        <br>
+    <img src={{ favorite.img_url }} class="fav-recipe">
     </li>
     {% endfor %}
 </ul>
