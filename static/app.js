@@ -101,42 +101,53 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     }
 }
 
-
-//function that adds a favorite button for a recipe
-// function addFavoriteButton(){
-//     // let favoriteArr = await axious.get(`${BASE_URL}/users/curruser/favorites`);
-
-//     $('#favoriteButton').append('<i class="far fa-star"> </i>')
-
-//     // console.log(favoriteArr)
-// }
-
+ //toggle a favorite when clicked
 $('body').on("click", ".favoriteButton", async function(evt){
-    //toggle a favorite when clicked
-
     evt.preventDefault();
     let recipeId = evt.target.parentNode.id
-
-    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {recipe_id: recipeId})
+    let clicked_button = $(`#${recipeId} > .favoriteButton`)
+    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {"recipe_id": recipeId})
+    
+    //switch the favorite button when clicking
+    if(res.data == "unfavorited"){
+        clicked_button.empty()
+        clicked_button.append('<i class="far fa-star"></i>')
+    } else {
+        clicked_button.empty()
+        clicked_button.append('<i class="fas fa-star"></i>')
+    }
 })
 
+//This definitely needs to be simplified
 async function toggle_favorite_icons(){
     let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
     let all_fav_recipe_ids = Object.entries(data.data['favIds'])
 
-    let all_fav_buttons = document.getElementsByClassName('favoriteButton')
+    let raw_arr = []
 
-    console.log(all_fav_recipe_ids)
-    for(fav_button of all_fav_buttons){
+    for(let i=0; i < all_fav_recipe_ids.length; i++){
+        raw_arr.push(all_fav_recipe_ids[i][1])
+    }
+
+    let str = JSON.stringify(raw_arr)
+    let str2 = str.slice(0, -1)
+    str2 = str2.substring(1)
+    let str_arr = str2.split(",")
+    let fav_arr = []
+    for(let x=0; x<str_arr.length;x++){
+        fav_arr.push(str_arr[x])
+    }
+    
+    let all_fav_buttons = Array.from(document.getElementsByClassName('favoriteButton'))
+
+    
+    for(let y=0; y<all_fav_buttons.length;y++){
+        let fav_button = all_fav_buttons[y]
         let id = fav_button.parentNode.id
-        console.log(id)
-
-        console.log(all_fav_recipe_ids.includes(id))
-        // if(all_fav_recipe_ids.includes(id)){
-        //     console.log("it's a fav")
-        //     $(`#${id} > .favoriteButton`).append('<i class="fas fa-star">favorited</i>')
-        // } else {
-        //     $(`#${id} > .favoriteButton`).append('<i class="far fa-star"></i>')
-        // }
+        if(fav_arr.includes(id)){
+            $(`#${id} > .favoriteButton`).append('<i class="fas fa-star"></i>')
+        } else {
+            $(`#${id} > .favoriteButton`).append('<i class="far fa-star"></i>')
+        }
     }
 }   
