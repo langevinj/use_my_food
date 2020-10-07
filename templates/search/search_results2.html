@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+<!-- {% block content %}
+<h2>Search: {{ search_term }}</h2>
+<ul>
+    {% for recipe in searched_recipes %}
+    <li id="${recipe.id}"><a class="title" href=${recipe.sourceUrl} target="_blank">{{recipe.name}}</a>
+        {% if recipe.vegetarian %}
+            <span class="vegetarian">Vegetarian</span>
+        {% endif %}
+        {% if recipe.vegan %}
+            <span class="vegan hidden">Vegan</span>
+        {% endif %}
+        <button class="favoriteButton"></button><br><img src={{recipe.image}}></li>
+    {% endfor %}
+</ul> -->
+{% endblock %}

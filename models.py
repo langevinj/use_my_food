@@ -155,31 +155,62 @@ class User(db.Model):
         
         return False
     
-# class Recipe(db.Model):
-#     """Recipe class"""
+class Recipe(db.Model):
+    """Recipe class"""
 
-#     __tablename__ = "recipes"
+    __tablename__ = "recipes"
 
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True
-#     )
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
-#     name = db.Column(
-#         db.Text,
-#         nullable=False
-#     )
+    name = db.Column(
+        db.Text,
+        nullable=False
+    )
 
-#     recipe_url = db.Column(
-#         db.String,
-#         nullable=False
-#     )
+    recipe_url = db.Column(
+        db.String,
+        nullable=False
+    )
 
-#     image_url = db.Column(
-#         db.String,
-#         nullable=False,
-#         default=DEFAULT_IMG_URL
-#     )
+    image_url = db.Column(
+        db.String,
+        nullable=False,
+        default=DEFAULT_IMG_URL
+    )
+
+    vegetarian = db.Column(
+        db.Boolean,
+        nullable=True
+    )
+
+    vegan = db.Column(
+        db.Boolean,
+        nullable=True
+    )
+
+    api_id = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    @classmethod
+    def add_recipe(cls, name, recipe_url, image_url, api_id, vegetarian=False, vegan=False):
+        """ Adds a recipe to the recipe table """
+
+        recipe = Recipe(
+            name=name,
+            recipe_url=recipe_url,
+            image_url=image_url,
+            vegetarian=vegetarian,
+            vegan=vegan,
+            api_id=api_id,
+        )
+
+        db.session.add(recipe)
+        return recipe
 
     # favorited_by = db.relationship(
     #     'User',

@@ -163,3 +163,18 @@ async function toggle_favorite_icons(){
         }
     }
 }   
+
+$('#search-by-recipe').on("submit", async function(evt){
+    evt.preventDefault()
+    searchTerm = $('#search-term').val()
+    let res = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${searchTerm}&number=2&addRecipeInformation=true&apiKey=${config["apiKey"]}`)
+    let res2 = await axios.post(`${BASE_URL}/search`, {"data": res, "search_term": searchTerm})
+    console.log(res2)
+    let data = JSON.stringify(res2)
+    let data2 = JSON.parse(data)
+
+
+    console.log(data2.data.search_term)
+    let render_page = await axios.get(`${BASE_URL}/search/${data2.data.search_term}`)
+    return 
+})

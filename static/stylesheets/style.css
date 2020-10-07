@@ -29,23 +29,29 @@
 }
 
 #search-forms{
-    border: 1px solid black;
+    margin-top: 15px;
+    z-index: 3;
+    /* background-color: #E6BDC5; */
+    background-color: #FFFDE3;
+    padding: 10px;
 }
 
 .form-border {
     box-sizing: border-box;
 }
 
-.side-by-side{
-    float: left;
-}
-
 #form-spacer{
-    margin: 10%;
+    margin: 5%;
 }
 
 @media (max-width: 1250px){
     #form-spacer{
         display: none;
+    }
+}
+
+@media (min-width: 1250px){
+    .side-by-side{
+        float: left;
     }
 }
