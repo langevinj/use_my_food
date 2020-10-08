@@ -2,13 +2,11 @@ const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients
 
 const BASE_URL = "http://127.0.0.1:5000"
 
-// $('#search-for-recipes').click(function(evt){
-//     evt.preventDefault()
-//     let rad = $('input[type="radio"][name="optradio"]:checked').val()
-//     let val = parseInt(rad)
-//     let test = $('#searchIngredients').val();
-//     console.log(test)
-// })
+$('#search-for-recipes').click(function(evt){
+    evt.preventDefault()
+    let rad = $('input[type="radio"][name="optradio"]:checked').val()
+    let val = parseInt(rad)
+})
 
 
 $('#search-for-recipes').click(async function (evt) {
@@ -114,11 +112,23 @@ $('body').on("click", ".favoriteButton", async function(evt){
     evt.preventDefault();
     let recipeId = evt.target.parentNode.id
     let clicked_button = $(`#${recipeId} > .favoriteButton`)
-    let img_src = clicked_button.siblings('img').attr('src')
+    let image_url = clicked_button.siblings('img').attr('src')
     let recipe_url = $(`#${recipeId} .title`).prop('href')
     let name = $(`#${recipeId} .title`).text()
+    let vegetarian = !$(`#${recipeId} .vegetarian`).hasClass('hidden')
+    let vegan = !$(`#${recipeId} .vegan`).hasClass('hidden')
+    console.log("clicked")
+    //add the recipe to the recipe table, get back table ID
+    let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": recipeId, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
+    let id;
 
-    let res = await axios.post(`${BASE_URL}/users/toggle_favorite/`, {"recipe_id": recipeId, "img_src": img_src, "name": name, "recipe_url": recipe_url})
+    if(res){
+        id = res.data['id'];
+    }
+
+    console.log(id)
+    
+    let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
     
     //switch the favorite button when clicking
     if(res.data == "unfavorited"){
@@ -164,17 +174,5 @@ async function toggle_favorite_icons(){
     }
 }   
 
-$('#search-by-recipe').on("submit", async function(evt){
-    evt.preventDefault()
-    searchTerm = $('#search-term').val()
-    let res = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?query=${searchTerm}&number=2&addRecipeInformation=true&apiKey=${config["apiKey"]}`)
-    let res2 = await axios.post(`${BASE_URL}/search`, {"data": res, "search_term": searchTerm})
-    console.log(res2)
-    let data = JSON.stringify(res2)
-    let data2 = JSON.parse(data)
-
-
-    console.log(data2.data.search_term)
-    let render_page = await axios.get(`${BASE_URL}/search/${data2.data.search_term}`)
-    return 
-})
+//On loading of page always toggle favorites for recipes
+window.onload = toggle_favorite_icons()

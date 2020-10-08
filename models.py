@@ -49,11 +49,6 @@ class Favorites(db.Model):
         db.Integer,
         primary_key=True
     )
-    
-    name = db.Column(
-        db.String,
-        nullable=False
-    )
 
     user_id = db.Column(
         db.Integer,
@@ -61,20 +56,9 @@ class Favorites(db.Model):
     )
 
     recipe_id = db.Column(
-        db.Integer, 
-        nullable=False
+        db.Integer,
+        db.ForeignKey('recipes.id', ondelete="cascade")
     )
-
-    img_url = db.Column(
-        db.String,
-        nullable=False
-    )
-
-    recipe_url = db.Column(
-        db.String,
-        nullable="False"
-    )
-
 
 
 
@@ -193,7 +177,12 @@ class Recipe(db.Model):
 
     api_id = db.Column(
         db.Integer,
-        nullable=False
+        nullable=False,
+        unique = True,
+    )
+
+    favorite = db.relationship(
+        "Favorites"
     )
 
     @classmethod
@@ -228,24 +217,36 @@ class Recipe(db.Model):
 ###########
 #Helper methods
 
-def toggle_favorites(recipe_id, user_id, img_src, name, recipe_url):
+def toggle_favorites(recipe_id, user_id):
     """Toggle a favorite for a user on or off by adding or deleting it to the favorite table"""
     all_favorites = user_favorites_list(user_id)
     all_favorites_id = []
     
     for fav in all_favorites:
-        all_favorites_id.append(fav.recipe_id)
-    
-    if recipe_id in all_favorites_id:
-        recipe = Favorites.query.filter(Favorites.recipe_id==recipe_id).first()
-        db.session.delete(recipe)
+        all_favorites_id.append(fav.id)
+
+    fav_search = Favorites.query.filter(Favorites.recipe_id==recipe_id).first()
+
+    if fav_search:
+        db.session.delete(fav_search)
         db.session.commit()
         return "unfavorited"
     else:
-        newFav = Favorites(user_id=user_id, recipe_id=recipe_id, img_url=img_src, name=name, recipe_url=recipe_url)
+        newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
         db.session.add(newFav)
         db.session.commit()
         return "favorited"
+
+    # if fav_id in all_favorites_id:
+    #     recipe = Favorites.query.get(fav_id)
+    #     db.session.delete(recipe)
+    #     db.session.commit()
+    #     return "unfavorited"
+    # else:
+    #     newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
+    #     db.session.add(newFav)
+    #     db.session.commit()
+        # return "favorited"
 
 def user_favorites_list(user_id):
     """Create a list of all the user's favorites"""

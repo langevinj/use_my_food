@@ -6,6 +6,7 @@ from secret import API_SECRET_KEY
 from models import db, connect_db, User, Favorites, Recipe, toggle_favorites
 from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm
+import requests
 
 #remove this eventually
 CURR_USER_KEY = "curr_user"
@@ -156,60 +157,42 @@ def return_list_favorites():
     
     return {"favIds":favIds}
 
-@app.route('/users/toggle_favorite/', methods=["POST"])
+@app.route('/users/toggle_favorite', methods=["POST"])
 def add_favorite():
     """Toggle a user's favorite, respond to JS with favorited or unfavorited"""
     if not g.user:
         flash("Access unauthorized", 'danger')
-    recipe_id = request.json['recipe_id']
-    img_src = request.json['img_src']
-    name = request.json['name']
-    recipe_url = request.json['recipe_url']
+    
+    id = request.json['id']
 
-    response = toggle_favorites(int(recipe_id), g.user.id, str(img_src), name, recipe_url)
+    response = toggle_favorites(id, g.user.id)
     
     return response
 
 ##############################################################
 #Searching by recipe
-
 @app.route('/search', methods=["POST"])
 def search_by_recipe():
-    """Save searched recipes and return a serialized list"""
-    data = request.json['data']
-    results_list = data['data']['results']
-    searched_recipes = []
+    """Request recipe information based on the title of the searched recipe"""
+    search_term = request.form['searchRecipeTerm']
+    payload = {'query': search_term, 'number': 2, 'addRecipeInformation': 'true', 'apiKey': API_SECRET_KEY}
+    resp = requests.get('https://api.spoonacular.com/recipes/complexSearch', params=payload)
 
-    for recipe in results_list:
+    search_results = resp.json()['results']
+    recipe_list = json_to_recipe(search_results)
+
+    return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list)
+
+
+def json_to_recipe(recipes):
+    """Convert a list of json recipes into recipe instances and return them in a list"""
+    recipe_list = []
+    for recipe in recipes:
         new_recipe = Recipe.add_recipe(recipe['title'], recipe['sourceUrl'], recipe['image'], recipe['id'], recipe['vegetarian'], recipe['vegan'])
         db.session.commit()
-        get_recipe = Recipe.query.get(new_recipe.id)
-        serialized_recipe = serialize_recipe(get_recipe)
-        searched_recipes.append(serialized_recipe)
-    
-    search_term = request.json['search_term']
-    res = {"search_term": search_term, "searched_recipes": searched_recipes}
-    return res
-
-@app.route('/search/<search_term>')
-def redirect_to_search(search_term):
-
-    return redirect(f'/search_results/{search_term}')
-
-# @app.route('/search_results', methods=["POST"])
-# def display_search_results():
-#     """display the recipes returned from the search"""
-#     data = request.json['data']
-#     search_term = data["search_term"]
-#     searched_recipes = data["searched_recipes"]
-#     import pdb; pdb.set_trace()
-
-#     return render_template('search/search_results.html', searched_recipes=searched_recipes, search_term=search_term)
-
-@app.route('/search_results/<search_term>')
-def earch_results_page(search_term):
-
-    return render_template('/search/searchresults.html', search_term=search_term)
+        recipe_list.append(new_recipe)
+    print(recipe_list)
+    return recipe_list
 
 ###############################################################
 #Home page and error pages
@@ -225,15 +208,40 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-def serialize_recipe(recipe):
-    """Serialize a recipe SQLAlchemy element to dictionary"""
+# def serialize_recipe(recipe):
+#     """Serialize a recipe SQLAlchemy element to dictionary"""
 
-    return {
-        "id": recipe.id,
-        "name": recipe.name,
-        "recipe_url": recipe.recipe_url,
-        "image_url": recipe.image_url,
-        "vegetarian": recipe.vegetarian,
-        "vegan": recipe.vegan,
-        "api_id": recipe.api_id,
-    }
+#     return {
+#         "id": recipe.id,
+#         "name": recipe.name,
+#         "recipe_url": recipe.recipe_url,
+#         "image_url": recipe.image_url,
+#         "vegetarian": recipe.vegetarian,
+#         "vegan": recipe.vegan,
+#         "api_id": recipe.api_id,
+#     }
+
+@app.route('/add_recipe', methods=["POST"])
+def add_recipe_to_db():
+    """Add a recipe to the Recipe table, return recipe id if success of False if not"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+
+    api_id = request.json['recipe_id']
+    recipe_url = request.json['recipe_url']
+    image_url = request.json['image_url']
+    name = request.json['name']
+    vegetarian = request.json['vegetarian']
+    vegan = request.json['vegan']
+
+    new_recipe = Recipe.add_recipe(
+        name, recipe_url, image_url, api_id, vegetarian, vegan)
+    db.session.commit()
+
+    return_recipe = Recipe.query.filter(Recipe.api_id==api_id).first()
+
+    if not return_recipe:
+        return False 
+    else: 
+        return {"id": return_recipe.id}
+    

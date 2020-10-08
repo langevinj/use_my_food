@@ -3,4 +3,18 @@
 
 {% block content %}
 <h2>Search: {{ search_term }}</h2>
+<ul>
+    {% for recipe in recipe_list %}
+        <li id="{{recipe.id}}"><a class="title" href={{recipe.recipe_url}} target="_blank">{{ recipe.name }}</a>
+        {% if recipe.vegetarian %}
+            <span class="vegetarian">Vegetarian</span>
+        {% endif %}
+        {% if recipe.vegan %}
+            <span class="vegan">Vegan</span>
+        {% endif %}
+        <button class="favoriteButton"></button><br>
+        <img src={{recipe.image_url}}>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock %}
