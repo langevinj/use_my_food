@@ -3,6 +3,7 @@
 
 {% block content %}
 
+{% if g.user %}
 <div class="row justify-content-start">
     <div class="col-1"></div>
     <div class="col-8 shadow" id="search-forms">
@@ -44,8 +45,7 @@
         <button id="search-for-recipes" class="btn btn-primary">Search</button>
         </div>
     </div>
-
-
+{% endif %}
     
 
 

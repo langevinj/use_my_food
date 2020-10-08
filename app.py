@@ -1,4 +1,5 @@
 import os 
+import requests
 
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
@@ -6,7 +7,6 @@ from secret import API_SECRET_KEY
 from models import db, connect_db, User, Favorites, Recipe, toggle_favorites
 from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm
-import requests
 
 #remove this eventually
 CURR_USER_KEY = "curr_user"
@@ -95,7 +95,6 @@ def login():
 
     form = LoginForm()
 
-
     if form.validate_on_submit():
         user = User.authenticate(form.username.data, form.password.data)
 
@@ -116,7 +115,6 @@ def user_details(user_id):
     """Show a users detail page"""
 
     user = User.query.get_or_404(user_id)
-
     return render_template("users/details.html", user=user)
 
 
@@ -125,14 +123,12 @@ def user_favorites(user_id):
     """Display a list of the users favorites"""
 
     user = User.query.get_or_404(user_id)
-    
     return render_template('users/favorites.html', user=user)
 
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():
     """Delete a user's account"""
-
     if not g.user:
         flash("Access unauthorized", 'danger')
     
@@ -148,7 +144,7 @@ def delete_user():
 
 @app.route('/users/curruser/favorites')
 def return_list_favorites():
-    """Return a list of the current user's favorites' recipe ids"""
+    """Return a list of the current user's favorites' recipe api_id"""
     favIds = []
     favorites = g.user.favorites
 
@@ -164,7 +160,6 @@ def add_favorite():
         flash("Access unauthorized", 'danger')
     
     id = request.json['id']
-
     response = toggle_favorites(id, g.user.id)
     
     return response
@@ -175,6 +170,8 @@ def add_favorite():
 def search_by_recipe():
     """Request recipe information based on the title of the searched recipe"""
     search_term = request.form['searchRecipeTerm']
+
+    #change the number here to change the amount of recipes returned, then search for recipes by recipe name
     payload = {'query': search_term, 'number': 2, 'addRecipeInformation': 'true', 'apiKey': API_SECRET_KEY}
     resp = requests.get('https://api.spoonacular.com/recipes/complexSearch', params=payload)
 
@@ -208,19 +205,6 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# def serialize_recipe(recipe):
-#     """Serialize a recipe SQLAlchemy element to dictionary"""
-
-#     return {
-#         "id": recipe.id,
-#         "name": recipe.name,
-#         "recipe_url": recipe.recipe_url,
-#         "image_url": recipe.image_url,
-#         "vegetarian": recipe.vegetarian,
-#         "vegan": recipe.vegan,
-#         "api_id": recipe.api_id,
-#     }
-
 @app.route('/add_recipe', methods=["POST"])
 def add_recipe_to_db():
     """Add a recipe to the Recipe table, return recipe id if success of False if not"""
@@ -236,6 +220,7 @@ def add_recipe_to_db():
 
     check_for_recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
 
+    #If the recipe is not already in the recipe table, create a new instance for it
     if not (check_for_recipe):
         new_recipe = Recipe.add_recipe(name, recipe_url, image_url, api_id, vegetarian, vegan)
         db.session.commit()
@@ -247,3 +232,15 @@ def add_recipe_to_db():
     else: 
         return {"id": return_recipe.id}
     
+# def serialize_recipe(recipe):
+#     """Serialize a recipe SQLAlchemy element to dictionary"""
+
+#     return {
+#         "id": recipe.id,
+#         "name": recipe.name,
+#         "recipe_url": recipe.recipe_url,
+#         "image_url": recipe.image_url,
+#         "vegetarian": recipe.vegetarian,
+#         "vegan": recipe.vegan,
+#         "api_id": recipe.api_id,
+#     }

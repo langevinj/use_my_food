@@ -128,7 +128,7 @@ $('body').on("click", ".favoriteButton", async function(evt){
     
     let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
     console.log(toggled)
-    
+
     //switch the favorite button when clicking
     if(toggled.data == "unfavorited"){
         clicked_button.empty()
@@ -141,27 +141,14 @@ $('body').on("click", ".favoriteButton", async function(evt){
 
 //This definitely needs to be simplified
 async function toggle_favorite_icons(){
+    //Get a list of all the api_ids of the current user's favorites
     let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
     let all_fav_recipe_ids = Object.entries(data.data['favIds'])
 
-    let raw_arr = []
-
-    for(let i=0; i < all_fav_recipe_ids.length; i++){
-        raw_arr.push(all_fav_recipe_ids[i][1])
-    }
-
-    let str = JSON.stringify(raw_arr)
-    let str2 = str.slice(0, -1)
-    str2 = str2.substring(1)
-    let str_arr = str2.split(",")
-    let fav_arr = []
-    for(let x=0; x<str_arr.length;x++){
-        fav_arr.push(str_arr[x])
-    }
-    
+    let fav_arr = create_fav_arr(all_fav_recipe_ids)
     let all_fav_buttons = Array.from(document.getElementsByClassName('favoriteButton'))
 
-    
+    //Iterate through all the favorite buttons, changing the icon displayed according to if the recipe is present in the fav_arr
     for(let y=0; y<all_fav_buttons.length;y++){
         let fav_button = all_fav_buttons[y]
         let id = fav_button.parentNode.id
@@ -172,6 +159,24 @@ async function toggle_favorite_icons(){
         }
     }
 }   
+
+//function to clean up the string data of all favorites api_ids
+function create_fav_arr(all_fav_recipe_ids){
+    let raw_arr = []
+    for (let i = 0; i < all_fav_recipe_ids.length; i++) {
+        raw_arr.push(all_fav_recipe_ids[i][1])
+    }
+
+    let str = JSON.stringify(raw_arr)
+    let str2 = str.slice(0, -1)
+    str2 = str2.substring(1)
+    let str_arr = str2.split(",")
+    let fav_arr = []
+    for (let x = 0; x < str_arr.length; x++) {
+        fav_arr.push(str_arr[x])
+    }
+    return fav_arr
+}
 
 //On loading of page always toggle favorites for recipes
 window.onload = toggle_favorite_icons()
