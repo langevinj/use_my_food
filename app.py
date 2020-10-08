@@ -153,7 +153,7 @@ def return_list_favorites():
     favorites = g.user.favorites
 
     for favorite in favorites:
-        favIds.append(favorite.recipe_id)
+        favIds.append(favorite.recipe.api_id)
     
     return {"favIds":favIds}
 
@@ -234,9 +234,11 @@ def add_recipe_to_db():
     vegetarian = request.json['vegetarian']
     vegan = request.json['vegan']
 
-    new_recipe = Recipe.add_recipe(
-        name, recipe_url, image_url, api_id, vegetarian, vegan)
-    db.session.commit()
+    check_for_recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
+
+    if not (check_for_recipe):
+        new_recipe = Recipe.add_recipe(name, recipe_url, image_url, api_id, vegetarian, vegan)
+        db.session.commit()
 
     return_recipe = Recipe.query.filter(Recipe.api_id==api_id).first()
 

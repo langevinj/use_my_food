@@ -60,6 +60,7 @@ class Favorites(db.Model):
         db.ForeignKey('recipes.id', ondelete="cascade")
     )
 
+    recipe = db.relationship("Recipe")
 
 
 class User(db.Model):
@@ -223,19 +224,30 @@ def toggle_favorites(recipe_id, user_id):
     all_favorites_id = []
     
     for fav in all_favorites:
-        all_favorites_id.append(fav.id)
+        if fav.recipe_id == recipe_id:
+            db.session.delete(fav)
+            db.session.commit()
+            print("unfavorited")
+            return "unfavorited"
+    
+    newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
+    db.session.add(newFav)
+    db.session.commit()
+    print("favorited")
+    return "favorited"
 
-    fav_search = Favorites.query.filter(Favorites.recipe_id==recipe_id).first()
+    # fav_search = bool(Favorites.query.filter(Favorites.recipe_id==recipe_id).first())
 
-    if fav_search:
-        db.session.delete(fav_search)
-        db.session.commit()
-        return "unfavorited"
-    else:
-        newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
-        db.session.add(newFav)
-        db.session.commit()
-        return "favorited"
+    # if fav_search:
+    #     prev_fav = Favroties
+    #     db.session.delete(fav_search)
+    #     db.session.commit()
+    #     return "unfavorited"
+    # else:
+    #     newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
+    #     db.session.add(newFav)
+    #     db.session.commit()
+    #     return "favorited"
 
     # if fav_id in all_favorites_id:
     #     recipe = Favorites.query.get(fav_id)

@@ -110,28 +110,27 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
  //toggle a favorite when clicked, save the favorite if not already present
 $('body').on("click", ".favoriteButton", async function(evt){
     evt.preventDefault();
-    let recipeId = evt.target.parentNode.id
-    let clicked_button = $(`#${recipeId} > .favoriteButton`)
+    let api_id = evt.target.parentNode.id
+    let clicked_button = $(`#${api_id} > .favoriteButton`)
     let image_url = clicked_button.siblings('img').attr('src')
-    let recipe_url = $(`#${recipeId} .title`).prop('href')
-    let name = $(`#${recipeId} .title`).text()
-    let vegetarian = !$(`#${recipeId} .vegetarian`).hasClass('hidden')
-    let vegan = !$(`#${recipeId} .vegan`).hasClass('hidden')
-    console.log("clicked")
-    //add the recipe to the recipe table, get back table ID
-    let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": recipeId, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
+    let recipe_url = $(`#${api_id} .title`).prop('href')
+    let name = $(`#${api_id} .title`).text()
+    let vegetarian = !$(`#${api_id} .vegetarian`).hasClass('hidden')
+    let vegan = !$(`#${api_id} .vegan`).hasClass('hidden')
+
+    //add the recipe to the recipe table, get back recipe.id 
+    let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
     let id;
 
     if(res){
         id = res.data['id'];
     }
-
-    console.log(id)
     
     let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
+    console.log(toggled)
     
     //switch the favorite button when clicking
-    if(res.data == "unfavorited"){
+    if(toggled.data == "unfavorited"){
         clicked_button.empty()
         clicked_button.append('<i class="far fa-star"></i>')
     } else {
