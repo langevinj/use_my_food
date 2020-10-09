@@ -5,8 +5,14 @@
 <h2>{{user.username}}'s Favorites:</h2>
 <ul>
     {% for favorite in user.favorites %}
-    <li id="{{favorite.recipe.api_id}}"><a href={{ favorite.recipe.recipe_url }} target="_blank">{{ favorite.recipe.name }}</a>
-        <br>
+    <li id="{{favorite.recipe.api_id}}"><a class="title" href={{ favorite.recipe.recipe_url }} target="_blank">{{ favorite.recipe.name }}</a>
+        {% if favorite.recipe.vegetarian %}
+        <span class="vegetarian">Vegetarian</span>
+        {% endif %}
+        {% if favorite.recipe.vegan %}
+        <span class="vegan">Vegan</span>
+        {% endif %}
+        <button class="favoriteButton favoritePage"></button><br>
     <img src={{ favorite.recipe.image_url }} class="fav-recipe">
     </li>
     {% endfor %}

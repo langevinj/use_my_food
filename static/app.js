@@ -122,6 +122,8 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
     let id;
 
+    let onFavoritesPage = clicked_button.hasClass('favoritePage')
+    console.log(onFavoritesPage)
     if(res){
         id = res.data['id'];
     }
@@ -129,10 +131,15 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
     console.log(toggled)
 
-    //switch the favorite button when clicking
+
+
+    //switch the favorite button when clicking, if on the favorites page, remove from the DOM
     if(toggled.data == "unfavorited"){
         clicked_button.empty()
         clicked_button.append('<i class="far fa-star"></i>')
+        if(onFavoritesPage){
+            $(`#${api_id}`).remove()
+        }
     } else {
         clicked_button.empty()
         clicked_button.append('<i class="fas fa-star"></i>')

@@ -176,7 +176,7 @@ def search_by_recipe():
     resp = requests.get('https://api.spoonacular.com/recipes/complexSearch', params=payload)
 
     search_results = resp.json()['results']
-    print(search_results)
+
     #clean up all the information not needed
     recipe_list = json_to_recipe(search_results)
 
@@ -192,12 +192,6 @@ def json_to_recipe(recipes):
         new_recipe = {"name": recipe['title'], "recipe_url": recipe['sourceUrl'], "image_url": recipe['image'], "api_id": recipe['id'], "vegetarian": recipe['vegetarian'], "vegan": recipe['vegan']}
         recipe_list.append(new_recipe)
 
-
-    # for recipe in recipes:
-    #     new_recipe = Recipe.add_recipe(recipe['title'], recipe['sourceUrl'], recipe['image'], recipe['id'], recipe['vegetarian'], recipe['vegan'])
-    #     db.session.commit()
-    #     recipe_list.append(new_recipe)
-    print(recipe_list)
     return recipe_list
 
 ###############################################################
