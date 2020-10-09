@@ -94,7 +94,7 @@ function listRecipes(recipes) {
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><br><img src=${image}></li>`
+    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" metod="GET"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><br><img src=${image}></li>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -192,10 +192,10 @@ $('#convertButton').click(async function(evt){
     let sourceUnit = $('#sourceUnit').val()
     let targetUnit = $('#targetUnit').val()
 
-    console.log(parseInt(sourceAmount))
+    console.log(parseFloat(sourceAmount))
 
     //handle an invalid amount input
-    if(!parseInt(sourceAmount)){
+    if(!parseFloat(sourceAmount)){
         $('#converterError').text('')
         $('#converterError').text('Not a valid amount')
         return
@@ -208,9 +208,6 @@ $('#convertButton').click(async function(evt){
         $('#convertedAmount').val(targetAmount)
     }
 
-    
-
-    console.log(targetAmount)
 })
 
 

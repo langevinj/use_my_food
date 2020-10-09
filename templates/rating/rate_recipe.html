@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Rate {{recipe.name}}{% endblock %}
+
+{% block content %}
+<h2>Rate <a href={{recipe.recipe_url}} target="_blank">{{recipe.name}}</a></h2>
+
+<form method="POST" id="recipe_review" action="/ratings/add_rating">
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.widget.input_type != 'hidden' %}
+    {% for error in field.errors %}
+    <span class="text-danger">{{ error }}</span>
+    {% endfor %}
+    {{ field(placeholder=field.label.text, class="form-control") }}
+    {% endfor %}
+
+    <button class="btn btn-primary btn-lg btn-block">Submit</button>
+</form>
+{% endblock %}

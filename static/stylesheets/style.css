@@ -28,11 +28,23 @@
     pointer-events: none;
 }
 
+.no-pointer{
+    pointer-events: none;
+}
+
 #search-forms{
     margin-top: 15px;
     z-index: 3;
     /* background-color: #E6BDC5; */
     background-color: #FFFDE3;
+    padding: 10px;
+}
+
+#converter-form{
+    margin-top: 15px;
+    z-index: 3;
+    /* background-color: #E6BDC5; */
+    background-color: #D4E5FF;
     padding: 10px;
 }
 

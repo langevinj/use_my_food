@@ -6,10 +6,12 @@ from flask_debugtoolbar import DebugToolbarExtension
 from secret import API_SECRET_KEY
 from models import db, connect_db, User, Favorites, Recipe, toggle_favorites
 from sqlalchemy.exc import IntegrityError
-from forms import UserAddForm, LoginForm
+from forms import UserAddForm, LoginForm, RecipeRatingForm
 
 #remove this eventually
 CURR_USER_KEY = "curr_user"
+
+BASE_URL = "http://127.0.0.1:5000"
 
 app = Flask(__name__)
 #Get DB_URI from environ variable or, if not set there, user development local db.
@@ -186,7 +188,6 @@ def search_by_recipe():
 def json_to_recipe(recipes):
     """Clean up a list of json recipes into a simpler recipe list of objects"""
     recipe_list = []
-
     for recipe in recipes:
         # new_recipe = jsonify(name=recipe['title'], recipe_url=recipe['sourceUrl'], image_url=recipe['image'], api_id=recipe['id'], vegetarian=recipe['vegetarian'], vegan=recipe['vegan'])
         new_recipe = {"name": recipe['title'], "recipe_url": recipe['sourceUrl'], "image_url": recipe['image'], "api_id": recipe['id'], "vegetarian": recipe['vegetarian'], "vegan": recipe['vegan']}
@@ -202,6 +203,36 @@ def show_converter():
     """The converter page"""
 
     return render_template('converter.html')
+
+##############################################################
+#Ratings routes
+
+@app.route('/ratings/rate')
+def rating_form():
+    """Load form for user to rate/review a recipe"""
+    api_id = request.args.get('api_id')
+
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+        return redirect('/')
+
+    recipe = Recipe.query.filter(Recipe.api_id==api_id).first()
+    
+    # if the recipe is not already in the DB get info about it from the API and add it to the db
+    if recipe == None:
+        payload = {'apiKey': API_SECRET_KEY}
+        resp = requests.get(f'https://api.spoonacular.com/recipes/{api_id}/information', params=payload)
+        recipe_info = resp.json()
+        new_recipe = json_to_recipe([recipe_info])
+        recipe_add = Recipe.add_recipe(recipe_info[0]['name'], recipe_info[0]['recipe_url'], recipe_info[0]['image_url'], recipe_info['api_id'], recipe_info['vegetarian'], recipe_info['vegan'])
+        db.session.commit()
+        #left off here
+        
+    recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
+        
+    form = RecipeRatingForm()
+
+    return render_template('/rating/rate_recipe.html', form=form, recipe=recipe)
 
 
 ###############################################################
@@ -223,6 +254,7 @@ def add_recipe_to_db():
     """Add a recipe to the Recipe table, return recipe id if success of False if not"""
     if not g.user:
         flash("Access unauthorized", 'danger')
+        return redirect('/')
 
     api_id = request.json['recipe_id']
     recipe_url = request.json['recipe_url']
@@ -230,6 +262,7 @@ def add_recipe_to_db():
     name = request.json['name']
     vegetarian = request.json['vegetarian']
     vegan = request.json['vegan']
+    import pdb; pdb.set_trace()
 
     check_for_recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
 
