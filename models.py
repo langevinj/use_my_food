@@ -179,7 +179,7 @@ class Recipe(db.Model):
     api_id = db.Column(
         db.Integer,
         nullable=False,
-        unique = True,
+        unique=True,
     )
 
     favorite = db.relationship(
