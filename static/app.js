@@ -185,5 +185,34 @@ function create_fav_arr(all_fav_recipe_ids){
     return fav_arr
 }
 
+$('#convertButton').click(async function(evt){
+    evt.preventDefault()
+    let sourceIngredient = $('#sourceIngredient').val()
+    let sourceAmount = $('#sourceAmount').val()
+    let sourceUnit = $('#sourceUnit').val()
+    let targetUnit = $('#targetUnit').val()
+
+    console.log(parseInt(sourceAmount))
+
+    //handle an invalid amount input
+    if(!parseInt(sourceAmount)){
+        $('#converterError').text('')
+        $('#converterError').text('Not a valid amount')
+        return
+    } else if (sourceUnit == targetUnit){
+        $('#convertedAmount').val(sourceAmount)
+    } else {
+        let converted = await axios.get(`https://api.spoonacular.com/recipes/convert?ingredientName=${sourceIngredient}&sourceAmount=${sourceAmount}&sourceUnit=${sourceUnit}&targetUnit=${targetUnit}&apiKey=${config["apiKey"]}`)
+
+        let targetAmount = converted.data['targetAmount']
+        $('#convertedAmount').val(targetAmount)
+    }
+
+    
+
+    console.log(targetAmount)
+})
+
+
 //On loading of page always toggle favorites for recipes
 window.onload = toggle_favorite_icons()

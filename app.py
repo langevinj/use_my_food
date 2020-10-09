@@ -194,6 +194,16 @@ def json_to_recipe(recipes):
 
     return recipe_list
 
+##############################################################
+#Converter
+
+@app.route('/converter')
+def show_converter():
+    """The converter page"""
+
+    return render_template('converter.html')
+
+
 ###############################################################
 #Home page and error pages
 
@@ -235,15 +245,4 @@ def add_recipe_to_db():
     else: 
         return {"id": return_recipe.id}
     
-# def serialize_recipe(recipe):
-#     """Serialize a recipe SQLAlchemy element to dictionary"""
 
-#     return {
-#         "id": recipe.id,
-#         "name": recipe.name,
-#         "recipe_url": recipe.recipe_url,
-#         "image_url": recipe.image_url,
-#         "vegetarian": recipe.vegetarian,
-#         "vegan": recipe.vegan,
-#         "api_id": recipe.api_id,
-#     }
