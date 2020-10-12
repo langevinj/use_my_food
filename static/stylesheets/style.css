@@ -67,3 +67,7 @@
         float: left;
     }
 }
+
+#tickmarks{
+    margin: 5px;
+}

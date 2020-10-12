@@ -110,6 +110,7 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
  //toggle a favorite when clicked, save the favorite if not already present
 $('body').on("click", ".favoriteButton", async function(evt){
     evt.preventDefault();
+    console.log("clicked")
     let api_id = evt.target.parentNode.id
     let clicked_button = $(`#${api_id} > .favoriteButton`)
     let image_url = clicked_button.siblings('img').attr('src')
@@ -122,6 +123,8 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
     let id;
 
+    console.log(res)
+    
     let onFavoritesPage = clicked_button.hasClass('favoritePage')
     console.log(onFavoritesPage)
     if(res){

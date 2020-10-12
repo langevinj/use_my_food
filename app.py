@@ -4,9 +4,9 @@ import requests
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from secret import API_SECRET_KEY
-from models import db, connect_db, User, Favorites, Recipe, toggle_favorites
+from models import db, connect_db, User, Favorites, Recipe, toggle_favorites, Rating
 from sqlalchemy.exc import IntegrityError
-from forms import UserAddForm, LoginForm, RecipeRatingForm
+from forms import UserAddForm, LoginForm
 
 #remove this eventually
 CURR_USER_KEY = "curr_user"
@@ -223,16 +223,35 @@ def rating_form():
         payload = {'apiKey': API_SECRET_KEY}
         resp = requests.get(f'https://api.spoonacular.com/recipes/{api_id}/information', params=payload)
         recipe_info = resp.json()
-        new_recipe = json_to_recipe([recipe_info])
-        recipe_add = Recipe.add_recipe(recipe_info[0]['name'], recipe_info[0]['recipe_url'], recipe_info[0]['image_url'], recipe_info['api_id'], recipe_info['vegetarian'], recipe_info['vegan'])
+        new_recipe = json_to_recipe([recipe_info])[0]
+        recipe_add = Recipe.add_recipe(new_recipe['name'], new_recipe['recipe_url'], new_recipe['image_url'], new_recipe['api_id'], new_recipe['vegetarian'], new_recipe['vegan'])
         db.session.commit()
-        #left off here
         
     recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
-        
-    form = RecipeRatingForm()
 
-    return render_template('/rating/rate_recipe.html', form=form, recipe=recipe)
+    return render_template('/rating/rate_recipe.html', recipe=recipe)
+
+@app.route('/ratings/add_rating', methods=["POST"])
+def add_rating():
+    """Add a rating the to rating DB"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+        return redirect('/')
+
+    resp = request.form
+
+    rating = float(resp.get("rating"))
+    review = resp.get("review")
+    id = int(resp.get('recipe_id'))
+
+    new_rating = Rating(rating=rating, user_id=g.user.id, recipe_id=id, review=review)
+    db.session.add(new_rating)
+    db.session.commit()
+
+    flash("Review added", 'success')
+    return redirect("/")
+
+
 
 
 ###############################################################
@@ -262,7 +281,6 @@ def add_recipe_to_db():
     name = request.json['name']
     vegetarian = request.json['vegetarian']
     vegan = request.json['vegan']
-    import pdb; pdb.set_trace()
 
     check_for_recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
 

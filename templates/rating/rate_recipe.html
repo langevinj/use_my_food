@@ -2,18 +2,27 @@
 {% block title %}Rate {{recipe.name}}{% endblock %}
 
 {% block content %}
-<h2>Rate <a href={{recipe.recipe_url}} target="_blank">{{recipe.name}}</a></h2>
+<div class="d-flex justify-content-center">
+    <h2>Rate: <a href={{recipe.recipe_url}} target="_blank">{{recipe.name}}</a></h2>
+</div>
 
-<form method="POST" id="recipe_review" action="/ratings/add_rating">
-    {{ form.hidden_tag() }}
+<div class="d-flex justify-content-center">
+    <img class="recipeImage" src={{recipe.image_url}}>
+</div>
 
-    {% for field in form if field.widget.input_type != 'hidden' %}
-    {% for error in field.errors %}
-    <span class="text-danger">{{ error }}</span>
-    {% endfor %}
-    {{ field(placeholder=field.label.text, class="form-control") }}
-    {% endfor %}
+<br><br>
+<div class="d-flex justify-content-center">
+<form method="POST" id="recipe_review" action="/ratings/add_rating" class="align-center">
+    <input type="range" value="3.0" min="1.0" max="5.0" step="0.5" oninput="this.nextElementSibling.value = this.value" name="rating" id="rating">
+    <output id="rangeOutput"></output>
 
+    <br>
+    <br>
+    <textarea id="review" rows="7" cols="50" placeholder="Write a review" name="review"></textarea>
+    <input class="hidden" value={{recipe.id}} name="recipe_id">
     <button class="btn btn-primary btn-lg btn-block">Submit</button>
 </form>
+</div>
 {% endblock %}
+
+
