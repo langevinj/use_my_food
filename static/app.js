@@ -88,13 +88,14 @@ function listRecipes(recipes) {
         appendRecipe(id, title, image, sourceUrl, vegetarian, vegan)
     }
     toggle_favorite_icons()
+    toggle_view_rating()
 }
 
 //appends recipes to list
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" metod="GET"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><br><img src=${image}></li>`
+    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" method="GET"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><span><form class="viewRatingForm" action='/ratings'></form></span><br><img src=${image}></li>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -124,7 +125,7 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let id;
 
     console.log(res)
-    
+
     let onFavoritesPage = clicked_button.hasClass('favoritePage')
     console.log(onFavoritesPage)
     if(res){
@@ -133,8 +134,6 @@ $('body').on("click", ".favoriteButton", async function(evt){
     
     let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
     console.log(toggled)
-
-
 
     //switch the favorite button when clicking, if on the favorites page, remove from the DOM
     if(toggled.data == "unfavorited"){
@@ -171,7 +170,7 @@ async function toggle_favorite_icons(){
 }   
 
 //function to clean up the string data of all favorites api_ids
-function create_fav_arr(all_fav_recipe_ids){
+function create_fav_arr(all_fav_recipe_ids) {
     let raw_arr = []
     for (let i = 0; i < all_fav_recipe_ids.length; i++) {
         raw_arr.push(all_fav_recipe_ids[i][1])
@@ -187,6 +186,24 @@ function create_fav_arr(all_fav_recipe_ids){
     }
     return fav_arr
 }
+
+async function toggle_view_rating() {
+    let data = await axios.get(`${BASE_URL}/ratings/all_recipe_ids`)
+    let all_rated_ids = (data.data['ids'])
+
+    let all_view_ratings_buttons = Array.from(document.getElementsByClassName('viewRatingForm'))
+
+    //Iterate through all recipes and add "view ratings" button if the recipe has any ratings
+    for(let i=0; i<all_view_ratings_buttons.length;i++){
+        let button = all_view_ratings_buttons[i]
+        let id = button.parentNode.parentNode.id
+        if(all_rated_ids.includes(parseInt(id))){
+            $(`#${id} > span > .viewRatingForm`).append(`<button class='viewRatingsForm' name='api_id' value=${id}>View this recipe's ratings</button>`)
+        }
+    }
+}
+
+
 
 $('#convertButton').click(async function(evt){
     evt.preventDefault()
@@ -216,3 +233,4 @@ $('#convertButton').click(async function(evt){
 
 //On loading of page always toggle favorites for recipes
 window.onload = toggle_favorite_icons()
+window.onload = toggle_view_rating()

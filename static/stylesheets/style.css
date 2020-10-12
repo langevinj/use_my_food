@@ -71,3 +71,16 @@
 #tickmarks{
     margin: 5px;
 }
+
+.rated-by{
+    font-style: italic;
+}
+
+footer{
+    position: fixed;
+    left: 0;
+    bottom: 2%;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75 rem;
+}

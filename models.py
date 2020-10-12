@@ -100,7 +100,7 @@ class User(db.Model):
     )
 
     ratings = db.relationship(
-        "Rating"
+        "Rating", backref="users"
     )
 
 

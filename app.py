@@ -113,11 +113,11 @@ def login():
 # Basic user routes:
 
 @app.route('/users/<int:user_id>')
-def user_details(user_id):
-    """Show a users detail page"""
+def user_delete(user_id):
+    """Show a users a prompt to delete their account"""
 
     user = User.query.get_or_404(user_id)
-    return render_template("users/details.html", user=user)
+    return render_template("users/delete.html", user=user)
 
 
 @app.route('/users/<int:user_id>/favorites')
@@ -251,7 +251,25 @@ def add_rating():
     flash("Review added", 'success')
     return redirect("/")
 
+@app.route('/ratings/all_recipe_ids')
+def get_all_rated_recipes():
+    """Return a list of all api_id's for recipes that have been rated"""
+    rated_recipes = Recipe.query.filter(Recipe.ratings != None).all()
 
+    ids = []
+    for recipe in rated_recipes:
+        ids.append(recipe.api_id)
+
+    return {"ids": ids}
+
+@app.route('/ratings')
+def show_recipe_ratings():
+    """Show all ratings for a specified recipe"""
+    api_id = request.args['api_id']
+
+    recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
+
+    return render_template('/rating/ratings.html', recipe=recipe)
 
 
 ###############################################################
