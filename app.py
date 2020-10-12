@@ -3,7 +3,7 @@ import requests
 
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from secret import API_SECRET_KEY
+from secret import API_SECRET_KEY, TEST_API_SECRET_KEY
 from models import db, connect_db, User, Favorites, Recipe, toggle_favorites, Rating
 from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm
