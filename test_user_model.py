@@ -115,6 +115,7 @@ class UserModelTestCase(TestCase):
         db.session.commit()
 
         u_test = User.query.get(uid)
+        self.assertIsNotNone(u_test)
         self.assertEqual(u_test.username, "testtest")
         self.assertEqual(u_test.email, "testtest@test.com")
         self.assertNotEqual(u_test.password, "password")
@@ -125,54 +126,16 @@ class UserModelTestCase(TestCase):
         invalid = User.signup(None, "test@test.com", "password")
         uid = 1234567
         invalid.id = uid 
-        with self.assertRaises(exc.IntegrityError) as content:
+        with self.assertRaises(exc.IntegrityError) as context:
             db.session.commit()
     
     def test_invalid_email(self):
         invalid = User.signup("test3", None, "password")
         uid = 1235689
         invalid.id = uid 
-        with self.assertRaises(exc.IntegrityError) as content:
+        with self.assertRaises(exc.IntegrityError) as context:
             db.session.commit()
     
     def test_invalid_password(self):
-        with self.assertRaises(ValueError) as content:
+        with self.assertRaises(ValueError) as context:
             User.signup("testtest", "email@email.com", None)
-    
-
-    ##########################
-    #Favorites test
-    ###
-    
-    # def test_user_favorites(self):
-    #     test_fav = Favorites(user_id=self.uid1, recipe_id=self.rid1)
-    #     testid = 896745
-    #     test_fav.id = testid
-    #     db.session.commit()
-
-    #     self.assertEqual(len(self.u1.favorites), 1)
-    #     self.assertEqual(len(self.u2.favorites), 0)
-
-    #     self.assertEqual(self.u1.favorites[0].id, 896745)
-    #     self.assertEqual(self.u1.favorites[0].recipe_id, self.rid1)
-    #     self.assertEqual(self.u1.favorites[0].user_id, self.uid1)
-    
-
-    # ##########################
-    # #Ratings test
-    # ###
-
-    # def test_user_ratings(self):
-    #     test_rate = Rating(rating=3.5, user_id=self.uid1, recipe_id=self.rid1, review="It tasted alright, needs more salt")
-    #     testid = 9876543
-    #     test_rate.id = testid 
-    #     db.session.commit()
-
-    #     self.assertEqual(len(self.u1.ratings), 1)
-    #     self.assertEqual(len(self.u2.ratings), 0)
-
-    #     self.assertEqual(self.u1.ratings[0].recipe_id, self.rid1)
-    #     self.assertEqual(self.u1.ratings[0].rating, 3.5)
-    #     self.assertEqual(self.u1.ratings[0].review, "It tasted alright, needs more salt")
-    #     self.assertEqual(self.u1.ratings[0].id, test_rate.id)
-

@@ -31,12 +31,14 @@ class Rating(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
+        db.ForeignKey('users.id', ondelete='cascade'),
+        nullable=False
     )
 
     recipe_id = db.Column(
         db.Integer,
-        db.ForeignKey('recipes.id', ondelete='cascade')
+        db.ForeignKey('recipes.id', ondelete='cascade'),
+        nullable=False
     )
 
     review = db.Column(
@@ -57,12 +59,14 @@ class Favorites(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade')
+        db.ForeignKey('users.id', ondelete='cascade'),
+        nullable=False
     )
 
     recipe_id = db.Column(
         db.Integer,
-        db.ForeignKey('recipes.id', ondelete="cascade")
+        db.ForeignKey('recipes.id', ondelete="cascade"),
+        nullable=False
     )
 
     recipe = db.relationship("Recipe")
@@ -207,18 +211,6 @@ class Recipe(db.Model):
 
         db.session.add(recipe)
         return recipe
-
-    # favorited_by = db.relationship(
-    #     'User',
-    #     secondary='favorites'
-    # )
-
-    # ratings = db.relationship(
-    #     "Recipe",
-    #     secondary="rating",
-    #     primaryjoin=(Rating.recipe_id == id),
-    #     secondaryjoin=(Rating.user_id == User.id)
-    # )
 
 
 ###########
