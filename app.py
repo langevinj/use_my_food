@@ -137,6 +137,51 @@ def user_favorites(user_id):
 
     return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings)
 
+@app.route('/users/<int:user_id>/ratings')
+def user_ratings(user_id):
+    """Display a list of ratings the user has provided"""
+
+    user = User.query.get_or_404(user_id)
+
+    ratings = user.ratings
+    recipes = []
+    # user_ratings = {}
+
+    for rating in ratings:
+        recipe = Recipe.query.get(rating.recipe_id)
+        recipes.append(recipe)
+
+    return render_template('users/ratings.html', user=user, ratings=ratings, recipes=recipes)
+
+@app.route('/ratings/edit', methods=["GET"])
+def edit_rating_form():
+    """Allow a user to edit a rating"""
+    rating_id = request.args.get('rating_id')
+    rating = Rating.query.get_or_404(rating_id)
+
+    return render_template('rating/edit.html', rating=rating)
+
+@app.route('/ratings/edit', methods=["POST"])
+def edit_rating():
+    """Rewrite previos rating by a user"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+        return redirect('/login')
+    
+    review = request.form['review']
+    rating = request.form['rating']
+    user_id = request.form['user_id']
+    rating_id = request.form['rating_id']
+
+    rating_to_edit = Rating.query.get_or_404(rating_id)
+
+    rating_to_edit.review = review 
+    rating_to_edit.rating = rating 
+
+    db.session.commit()
+
+    flash("Review updated", "success")
+    return redirect(f'/users/{user_id}/ratings')
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():

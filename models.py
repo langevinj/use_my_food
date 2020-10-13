@@ -46,6 +46,8 @@ class Rating(db.Model):
         nullable=True,
     )
 
+    recipe= db.relationship("Recipe")
+
 
 class Favorites(db.Model):
     """Favorites class"""

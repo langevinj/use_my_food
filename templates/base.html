@@ -31,6 +31,9 @@
 
             {% if g.user %}
             <li class="nav-item active">
+                <a class="nav-link" href="/users/{{ g.user.id }}/ratings">My Ratings</a>
+            </li>
+            <li class="nav-item active">
                 <a class="nav-link" href="/users/{{ g.user.id }}/favorites">Favorites</a>
             </li>
             <li class="nav-item active">
