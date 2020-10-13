@@ -125,7 +125,17 @@ def user_favorites(user_id):
     """Display a list of the users favorites"""
 
     user = User.query.get_or_404(user_id)
-    return render_template('users/favorites.html', user=user)
+
+    favorites = user.favorites
+    has_ratings = []
+
+    for fav in favorites:
+        rating = Recipe.query.filter(
+            Recipe.api_id == fav.recipe.api_id and Recipe.ratings != 0)
+        if rating != 0:
+            has_ratings.append(fav.id)
+
+    return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings)
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -181,6 +191,14 @@ def search_by_recipe():
 
     #clean up all the information not needed
     recipe_list = json_to_recipe(search_results)
+
+    #idicate whether there are ratings for each result
+    for recipe in recipe_list:
+        rating = Recipe.query.filter(Recipe.api_id == recipe['api_id'] and Recipe.ratings != 0)
+        if rating != 0:
+            recipe['has_ratings'] = True
+        else:
+            recipe['has_ratings'] = False
 
     return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list)
 

@@ -14,8 +14,13 @@
         {% endif %}
         <button class="favoriteButton"></button><br>
         <span>
-            <form action='/ratings/{{recipe.api_id}}'><button class="rateRecipe">Rate this recipe</button></form>
+            <form action='/ratings/rate' method="GET"><input class="hidden" value={{recipe.api_id}} type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form>
         </span>
+        {% if recipe.has_ratings %}
+        <span>
+            <form class="viewRatingForm" action='/ratings'><button class='viewRatingsForm' name='api_id' value={{recipe.api_id}}>View this recipe's ratings</button></form></span>
+        </span>
+        {% endif %}
         <img src={{recipe.image_url}}>
         </li>
     {% endfor %}

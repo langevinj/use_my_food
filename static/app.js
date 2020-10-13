@@ -233,4 +233,4 @@ $('#convertButton').click(async function(evt){
 
 //On loading of page always toggle favorites for recipes
 window.onload = toggle_favorite_icons()
-window.onload = toggle_view_rating()
+// window.onload = toggle_view_rating()

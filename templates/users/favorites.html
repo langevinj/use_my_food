@@ -4,7 +4,7 @@
 {% block content %}
 <h2>{{user.username}}'s Favorites:</h2>
 <ul>
-    {% for favorite in user.favorites %}
+    {% for favorite in favorites %}
     <li id="{{favorite.recipe.api_id}}"><a class="title" href={{ favorite.recipe.recipe_url }} target="_blank">{{ favorite.recipe.name }}</a>
         {% if favorite.recipe.vegetarian %}
         <span class="vegetarian">Vegetarian</span>
@@ -12,8 +12,19 @@
         {% if favorite.recipe.vegan %}
         <span class="vegan">Vegan</span>
         {% endif %}
-        <button class="favoriteButton favoritePage"></button><br>
+        <button class="favoriteButton favoritePage"></button>
+        <span>
+            <form action='/ratings/rate' method="GET"><input class="hidden" value={{favorite.recipe.api_id}} type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form>
+        </span>
+        {% if favorite.id in has_ratings %}
+        <span>
+            <form class="viewRatingForm" action='/ratings'><button class='viewRatingsForm' name='api_id'
+                    value={{favorite.recipe.api_id}}>View this recipe's ratings</button></form>
+        </span>
+        {% endif %}
+        <br>
     <img src={{ favorite.recipe.image_url }} class="fav-recipe">
+    
     </li>
     {% endfor %}
 </ul>
