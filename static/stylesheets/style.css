@@ -36,7 +36,8 @@
     margin-top: 15px;
     z-index: 3;
     /* background-color: #E6BDC5; */
-    background-color: #FFFDE3;
+    /* background-color: #FFFDE3; */
+    background-color: #D4E5FF;
     padding: 10px;
 }
 
@@ -79,8 +80,22 @@
 footer{
     position: fixed;
     left: 0;
-    bottom: 2%;
+    bottom: 0;
+    height: 40px;
     width: 100%;
     text-align: center;
     font-size: 0.75 rem;
+    /* background-color: #dedede; */
+    margin: auto;
+    padding: 10px;
 }
+
+/* #content{
+    background-color: #b87455;
+    height: 100%;
+    display: table;
+} */
+/* .container-fluid, html{
+    background-color:  #b87455;
+} */
+
