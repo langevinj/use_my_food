@@ -112,3 +112,20 @@ class UserModelTestCase(TestCase):
         #Because Bcrypt was used, password strings should start with $2b$
         self.assertTrue(u_test.password.startswith('$2b$'))
 
+    def test_invalid_username(self):
+        invalid = User.signup(None, "test@test.com", "password")
+        uid = 1234567
+        invalid.id = uid 
+        with self.assertRaises(exc.IntegrityError) as content:
+            db.session.commit()
+    
+    def test_invalid_email(self):
+        invalid = User.signup("test3", None, "password")
+        uid = 1235689
+        invalid.id = uid 
+        with self.assertRaises(exc.IntegrityError) as content:
+            db.session.commit()
+    
+    def test_invalid_password(self):
+        with self.assertRaises(ValueError) as content:
+            User.signup("testtest", "email@email.com", None)
