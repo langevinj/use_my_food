@@ -3,7 +3,13 @@
 {% block content %}
 
     <div class="row justify-content-md-center">
-        <h2 class="join-message">Start using your food efficiently</h2>
+        <h2 class="join-message col-12 text-center">Start using your food efficiently</h2>
+        <br>
+    </div>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-4 w-100">
         <form method="POST" id="user_form">
             {{ form.hidden_tag() }}
 
@@ -16,6 +22,9 @@
 
             <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
         </form>
+        </div>
+        <div class="col-4 w-25">
+        </div>
     </div>
 
 {% endblock %}
