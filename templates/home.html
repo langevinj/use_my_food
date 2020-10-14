@@ -4,8 +4,8 @@
 {% block content %}
 
 {% if g.user %}
-<div class="row justify-content-start">
-    <div class="col-1"></div>
+<div class="row justify-content-center">
+    <div class="col-2"></div>
     <div class="col-8 shadow" id="search-forms">
         <div class="w-45 side-by-side">
         <form id="search-by-ingredient">
@@ -45,10 +45,12 @@
         <button id="search-for-recipes" class="btn btn-primary">Search</button>
         </div>
     </div>
+    <div class="col-2"></div>
 {% endif %}
 </div>
+<br>
 
-<div id="recipes-from-search">
+<div id="recipes-from-search" class="row justify-content-center">
     <ul id="recipeList">
     </ul>
 </div>

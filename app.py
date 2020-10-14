@@ -236,16 +236,16 @@ def search_by_recipe():
 
     #clean up all the information not needed
     recipe_list = json_to_recipe(search_results)
-
     #idicate whether there are ratings for each result
-    for recipe in recipe_list:
-        rating = Recipe.query.filter(Recipe.api_id == recipe['api_id'] and Recipe.ratings != 0)
-        if rating != 0:
-            recipe['has_ratings'] = True
-        else:
-            recipe['has_ratings'] = False
+    has_ratings = []
 
-    return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list)
+    for recipe in recipe_list:
+        rating = Recipe.query.filter(
+            Recipe.api_id == recipe['api_id'] and Recipe.ratings != 0).all()
+        if len(rating) != 0:
+            has_ratings.append(recipe['api_id'])
+
+    return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list, has_ratings=has_ratings)
 
 
 def json_to_recipe(recipes):
@@ -341,6 +341,9 @@ def show_recipe_ratings():
 @app.route('/')
 def homepage():
     """Show homepage, will need to have validation added"""
+    if not g.user:
+        return redirect('/signup')
+
     return render_template('home.html')
 
 

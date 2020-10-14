@@ -3,6 +3,7 @@
 
 {% block content %}
 <h2>Search: {{ search_term }}</h2>
+<div class="row justify-content-center">
 <ul>
     {% for recipe in recipe_list %}
         <li id="{{recipe.api_id}}"><a class="title" href={{recipe.recipe_url}} target="_blank">{{ recipe.name }}</a>
@@ -12,17 +13,24 @@
         {% if recipe.vegan %}
             <span class="vegan">Vegan</span>
         {% endif %}
-        <button class="favoriteButton"></button><br>
+        <button class="favoriteButton"></button>
         <span>
-            <form action='/ratings/rate' method="GET"><input class="hidden" value={{recipe.api_id}} type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form>
+            <form action='/ratings/rate' method="GET" id="ratingForm"><input class="hidden" value={{recipe.api_id}} type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form>
         </span>
-        {% if recipe.has_ratings %}
-        <span>
-            <form class="viewRatingForm" action='/ratings'><button class='viewRatingsForm' name='api_id' value={{recipe.api_id}}>View this recipe's ratings</button></form></span>
-        </span>
+        {% if recipe.api_id in has_ratings %}
+            <span>
+                <form class="viewRatingForm" action='/ratings'><button class='viewRatingsForm' name='api_id' value={{recipe.api_id}}>View ratings</button></form>
+            </span>
         {% endif %}
-        <img src={{recipe.image_url}}>
+        <div class="row">
+            <br>
+        </div>
+        <div class="recipeImage row justify-content-center">
+            <img src={{recipe.image_url}} alt="{{recipe.name}}" class="foodImg">
+        </div>
         </li>
+        <br>
     {% endfor %}
 </ul>
+</div>
 {% endblock %}

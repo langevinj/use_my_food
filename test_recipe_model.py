@@ -4,7 +4,7 @@
 #
 #    python -m unittest test_recipe_model.py
 
-from app import app
+
 import os
 from unittest import TestCase
 from sqlalchemy import exc
@@ -15,7 +15,7 @@ from models import db, User, Favorites, Rating, Recipe
 
 os.environ['DATABASE_URL'] = "postgresql:///usemyfood_test"
 
-
+from app import app
 #Create tables for all tests in one spot
 # in each test the data will be deleted
 

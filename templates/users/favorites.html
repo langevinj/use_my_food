@@ -23,8 +23,9 @@
         </span>
         {% endif %}
         <br>
-    <img src={{ favorite.recipe.image_url }} class="fav-recipe">
-    
+    <div class="recipeImage">
+        <img src={{ favorite.recipe.image_url }} class="fav-recipe foodImg">
+    </div>
     </li>
     {% endfor %}
 </ul>

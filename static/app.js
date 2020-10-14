@@ -95,7 +95,7 @@ function listRecipes(recipes) {
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" method="GET"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><span><form class="viewRatingForm" action='/ratings'></form></span><br><img src=${image}></li>`
+    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" method="GET" id="ratingForm"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><span><form class="viewRatingForm" action='/ratings'></form></span><br><div class="recipeImage row justify-content-center"><img src=${image} alt="${title}" class="foodImg"></div></li><br>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -114,7 +114,7 @@ $('body').on("click", ".favoriteButton", async function(evt){
     console.log("clicked")
     let api_id = evt.target.parentNode.id
     let clicked_button = $(`#${api_id} > .favoriteButton`)
-    let image_url = clicked_button.siblings('img').attr('src')
+    let image_url = clicked_button.siblings('.recipeImage').find('img').attr('src')
     let recipe_url = $(`#${api_id} .title`).prop('href')
     let name = $(`#${api_id} .title`).text()
     let vegetarian = !$(`#${api_id} .vegetarian`).hasClass('hidden')
@@ -198,7 +198,7 @@ async function toggle_view_rating() {
         let button = all_view_ratings_buttons[i]
         let id = button.parentNode.parentNode.id
         if(all_rated_ids.includes(parseInt(id))){
-            $(`#${id} > span > .viewRatingForm`).append(`<button class='viewRatingsForm' name='api_id' value=${id}>View this recipe's ratings</button>`)
+            $(`#${id} > span > .viewRatingForm`).append(`<button class='viewRatingsForm' name='api_id' value=${id}>View ratings</button>`)
         }
     }
 }
