@@ -234,8 +234,14 @@ def search_by_recipe():
 
     search_results = resp.json()['results']
 
-    #clean up all the information not needed
+    #if no results are found, or if therefore the query is not valid, respond with an error
+    if len(search_results) == 0:
+        flash("No recipes with this name have been found", 'danger')
+        return redirect('/')
+
+    #clean up all the information not needed by the page
     recipe_list = json_to_recipe(search_results)
+
     #idicate whether there are ratings for each result
     has_ratings = []
 

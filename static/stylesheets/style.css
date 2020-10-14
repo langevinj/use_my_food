@@ -40,6 +40,7 @@
     /* background-color: #FFFDE3; */
     background-color: #D4E5FF;
     padding: 10px;
+    margin-bottom: 20px;
 }
 
 #converter-form{
@@ -78,22 +79,22 @@
     font-style: italic;
 }
 
-.footer{
-    position: fixed;
+#footer{
+    position: absolute;
     left: 0;
     bottom: 0;
-    height: 40px;
+    height: 2.5rem;
     width: 100%;
     text-align: center;
     font-size: 0.75 rem;
-    /* background-color: #dedede; */
     margin: auto;
     padding: 10px;
 }
 
-footer{
-    margin-top: 5px;
-}
+/* footer{
+    margin-top: auto;
+    flex: 0 0 50px;
+} */
 
 /* #content{
     background-color: #b87455;
@@ -115,4 +116,13 @@ footer{
 
 .foodImg{
     width: 65%;
+}
+
+#content{
+    position: relative;
+    min-height: 100vh;
+}
+
+#content-wrap{
+    padding-bottom: 2.5rem;
 }

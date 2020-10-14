@@ -67,14 +67,25 @@
     </div>
 </nav>
 
-<div class="container-fluid h-100% d-inline-block" id="content">
+<div class="container-fluid h-100%" id="content">
     {% for category, message in get_flashed_messages(with_categories=True) %}
     <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %}
-    
+    <div id="content-wrap">
     {% block content %}
 
     {% endblock %}
+    </div>
+    <div class="text-muted bg-secondary" id="footer">
+        <span>Data gathered from the <a href="https://spoonacular.com/food-api" target="_blank">Spoonacular
+                API</a></span>
+    </div>
+    <!-- <div class="row mt-8">
+        <div class="footer text-muted bg-secondary">
+            <span>Data gathered from the <a href="https://spoonacular.com/food-api" target="_blank">Spoonacular
+                    API</a></span>
+        </div>
+    </div> -->
 
 </div>
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
@@ -89,10 +100,13 @@
     crossorigin="anonymous"></script>
     <script src="/static/config.js" type="text/javascript"></script>
     <script src="/static/app.js" type="text/javascript"></script>
-<footer>
+
+
+<!-- <footer>
     <div class="footer text-muted bg-secondary">
-        <span>Data gathered from the <a href="https://spoonacular.com/food-api" target="_blank">Spoonacular API</a></span>
+        <span>Data gathered from the <a href="https://spoonacular.com/food-api" target="_blank">Spoonacular
+                API</a></span>
     </div>
-</footer>
+</footer> -->
 </body>
 </html>

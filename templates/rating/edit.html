@@ -3,11 +3,11 @@
 
 {% block content %}
 <div class="d-flex justify-content-center">
-    <h2>Rate: <a href={{rating.recipe.recipe_url}} target="_blank">{{rating.recipe.name}}</a></h2>
+        <h2>Rate: <a href={{rating.recipe.recipe_url}} target="_blank">{{rating.recipe.name}}</a></h2>  
 </div>
 
 <div class="d-flex justify-content-center">
-    <img class="recipeImage" src={{rating.recipe.image_url}}>
+    <img class="recipeImage img-fluid mw-85" src={{rating.recipe.image_url}} alt="{{rating.recipe.name}}">
 </div>
 
 <br><br>
