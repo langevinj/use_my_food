@@ -174,23 +174,23 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(f.user_id, self.u1.id)
         self.assertEqual(f.recipe_id, self.r1.id)
 
-    def test_invalid_user_id_f(self):
-        f = Favorites(
-            user_id=None,
-            recipe_id=self.rid1
-        )
-        with self.assertRaises(exc.IntegrityError) as context:
-            db.session.add(f)
-            db.session.commit()
+    # def test_invalid_user_id_f(self):
+    #     f = Favorites(
+    #         user_id=None,
+    #         recipe_id=self.rid1
+    #     )
+    #     with self.assertRaises(exc.IntegrityError) as context:
+    #         db.session.add(f)
+    #         db.session.commit()
 
-    def test_invalid_recipe_id_f(self):
-        f = Favorites(
-            user_id=self.uid1,
-            recipe_id=None
-        )
-        with self.assertRaises(exc.IntegrityError) as context:
-            db.session.add(f)
-            db.session.commit()
+    # def test_invalid_recipe_id_f(self):
+    #     f = Favorites(
+    #         user_id=self.uid1,
+    #         recipe_id=None
+    #     )
+    #     with self.assertRaises(exc.IntegrityError) as context:
+    #         db.session.add(f)
+    #         db.session.commit()
 
     def test_user_favorites(self):
         """Are the user and favorites models connected"""
@@ -236,15 +236,15 @@ class RecipeModelTestCase(TestCase):
             db.session.add(r)
             db.session.commit()
     
-    def test_invalid_user_id_r(self):
-        r = Rating(rating=3,
-                   user_id=None,
-                   recipe_id=self.rid1,
-                   review="This was great!"
-                   )
-        with self.assertRaises(exc.IntegrityError) as context:
-            db.session.add(r)
-            db.session.commit()
+    # def test_invalid_user_id_r(self):
+    #     r = Rating(rating=3,
+    #                user_id=None,
+    #                recipe_id=self.rid1,
+    #                review="This was great!"
+    #                )
+    #     with self.assertRaises(exc.IntegrityError) as context:
+    #         db.session.add(r)
+    #         db.session.commit()
     
     def test_invalid_recipe_id_r(self):
         r = Rating(rating=3,

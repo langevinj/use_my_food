@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Page Not Found{% endblock %}
-
+    
 {% block content %}
+<br>
+<br>
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-5">
+        <h1 class="text-black display-2" id="notfoundtitle">Whoops 404</h1>
+        <h1 class="display-5" id="notfoundmessage">It looks like the page you were looking for rolled under the stove. We can't find it!</h1>
+    </div>
+    <div class="col-4" id="notfoundimg">
+        <img src="/static/images/sad.png" id="sadface">
+    </div>
+</div>
 {% endblock %}

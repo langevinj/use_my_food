@@ -32,7 +32,6 @@ class Rating(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable=False
     )
 
     recipe_id = db.Column(
@@ -61,14 +60,12 @@ class Favorites(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade'),
-        nullable=False
+        db.ForeignKey('users.id', ondelete='cascade')
     )
 
     recipe_id = db.Column(
         db.Integer,
-        db.ForeignKey('recipes.id', ondelete="cascade"),
-        nullable=False
+        db.ForeignKey('recipes.id', ondelete="cascade")
     )
 
     recipe = db.relationship("Recipe")

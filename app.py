@@ -130,11 +130,10 @@ def user_favorites(user_id):
     has_ratings = []
 
     for fav in favorites:
-        rating = Recipe.query.filter(
-            Recipe.api_id == fav.recipe.api_id and Recipe.ratings != 0)
-        if rating != 0:
+        rating = Rating.query.filter(Rating.recipe_id == fav.recipe_id).all()
+        if len(rating) != 0:
             has_ratings.append(fav.id)
-    
+
     rated_recipe_ids = []
     for rating in user.ratings:
         rated_recipe_ids.append(rating.recipe_id)

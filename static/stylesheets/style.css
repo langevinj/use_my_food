@@ -112,3 +112,21 @@
 #content-wrap{
     padding-bottom: 2.5rem;
 }
+
+/* #notfoundtitle{
+    text-align: center;
+} */
+
+#notfoundmessage{
+    color: lightgray;
+}
+
+#sadface{
+    width: 65%;
+}
+
+@media (max-width: 1250px){
+    #notfoundimg{
+        display: none;
+    }
+}
