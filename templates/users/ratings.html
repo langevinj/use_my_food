@@ -28,7 +28,9 @@
                     value={{recipe.api_id}}>View this recipe's ratings</button></form>
         </span>
         <br>
-        <img src={{ recipe.image_url }} class="fav-recipe">
+        <div class="recipeImage">
+            <img src={{ recipe.image_url }} class="fav-recipe">
+        </div>
 
     </li>
     {% endfor %}

@@ -134,8 +134,12 @@ def user_favorites(user_id):
             Recipe.api_id == fav.recipe.api_id and Recipe.ratings != 0)
         if rating != 0:
             has_ratings.append(fav.id)
+    
+    rated_recipe_ids = []
+    for rating in user.ratings:
+        rated_recipe_ids.append(rating.recipe_id)
 
-    return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings)
+    return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings, rated_recipe_ids=rated_recipe_ids)
 
 @app.route('/users/<int:user_id>/ratings')
 def user_ratings(user_id):
@@ -145,7 +149,6 @@ def user_ratings(user_id):
 
     ratings = user.ratings
     recipes = []
-    # user_ratings = {}
 
     for rating in ratings:
         recipe = Recipe.query.get(rating.recipe_id)
@@ -226,6 +229,8 @@ def add_favorite():
 @app.route('/search', methods=["POST"])
 def search_by_recipe():
     """Request recipe information based on the title of the searched recipe"""
+    user = User.query.get(g.user.id)
+
     search_term = request.form['searchRecipeTerm']
 
     #change the number here to change the amount of recipes returned, then search for recipes by recipe name
@@ -251,7 +256,7 @@ def search_by_recipe():
         if len(rating) != 0:
             has_ratings.append(recipe['api_id'])
 
-    return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list, has_ratings=has_ratings)
+    return render_template('search/searchresults.html', search_term=search_term, recipe_list=recipe_list, has_ratings=has_ratings, user=user)
 
 
 def json_to_recipe(recipes):

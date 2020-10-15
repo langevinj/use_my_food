@@ -7,7 +7,7 @@
 </div>
 
 <div class="d-flex justify-content-center">
-    <img class="recipeImage" src={{recipe.image_url}}>
+    <img class="recipeImage img-fluid mw-85" src={{recipe.image_url}} alt="{{recipe.name}}">
 </div>
 
 <br><br>
@@ -18,7 +18,7 @@
 
     <br>
     <br>
-    <textarea id="review" rows="7" cols="50" placeholder="Write a review" name="review"></textarea>
+    <textarea id="review" rows="5" cols="40" placeholder="Write a review" name="review"></textarea>
     <input class="hidden" value={{recipe.id}} name="recipe_id">
     <button class="btn btn-primary btn-lg btn-block">Submit</button>
 </form>

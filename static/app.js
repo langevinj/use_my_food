@@ -230,7 +230,22 @@ $('#convertButton').click(async function(evt){
 
 })
 
+//going to have to change this function to look for the "edit this recipe" tag
+function toggle_all_edit_rating_buttons(){
+    let recipes_list = Array.from(document.getElementById('content').querySelectorAll('li'))
+
+    for(let i=0; i < recipes_list.length; i++){
+        let id = recipes_list[i].id
+        let rate = $(`#${id} > .rateButton`)
+        let check = $(`#${id} > .editRatingForm`)
+        if (check.length > 0){
+            rate.hide()
+        }
+    }
+}
+
 
 //On loading of page always toggle favorites for recipes
 window.onload = toggle_favorite_icons()
 // window.onload = toggle_view_rating()
+window.onload = toggle_all_edit_rating_buttons()
