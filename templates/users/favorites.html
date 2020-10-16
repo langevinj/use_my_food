@@ -17,7 +17,10 @@
             {% endif %}
 
             <button class="favoriteButton favoritePage"></button>
-            <form action='/ratings/rate' method="GET" class="rateButton"><input class="hidden" value={{favorite.recipe.api_id}} type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form>
+            <form action='/ratings/rate' method="GET" class="rateButton">
+                <input class="hidden" value={{favorite.recipe.api_id}} type="number" name="api_id">
+                <button>Rate this recipe</button>
+            </form>
 
             {% if favorite.id in has_ratings %}
                 <form class="viewRatingForm" action='/ratings'><button class='viewRatingsForm' name='api_id'
@@ -26,8 +29,10 @@
 
             {% for rating in user.ratings %}
                 {% if rating.recipe_id == favorite.recipe_id %}
-                <form action='/ratings/edit' method="GET" class="editRatingForm"><input class="hidden" value={{rating.id}} type="number"
-                    name="rating_id"><button class="editRating">Edit your rating</button></form>
+                <form action='/ratings/edit' method="GET" class="editRatingForm">
+                    <input class="hidden" value={{rating.id}} type="number" name="rating_id">
+                    <button>Edit your rating</button>
+                </form>
                 {% endif %}
             {% endfor %}
 
@@ -35,7 +40,6 @@
             <div class="recipeImage">
                 <img src={{ favorite.recipe.image_url }} class="fav-recipe">
             </div>
-
         </li>
         <br>
         {% endfor %}

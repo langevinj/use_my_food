@@ -90,7 +90,7 @@
     font-style: italic;
 }
 
-#favoriteButton, #ratingForm{
+#favoriteButton, .ratingForm{
     display: inline;
     margin: 5px;
 }
@@ -107,10 +107,6 @@
 #content-wrap{
     padding-bottom: 2.5rem;
 }
-
-/* #notfoundtitle{
-    text-align: center;
-} */
 
 #notfoundmessage{
     color: lightgray;

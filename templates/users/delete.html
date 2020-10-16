@@ -2,10 +2,12 @@
 {% block title %}{{ user.username }}{% endblock %}
 
 {% block content %}
+
 <h2>{{user.username}}</h2>
+
 <label for="deleteAccount">Are you sure you want to delete your account? It cannot be restored.</label>
-<form action="/users/delete" method="POST"
-id="deleteAccount">
+<form action="/users/delete" method="POST">
     <button>Delete User</button>
 </form>
+
 {% endblock %}

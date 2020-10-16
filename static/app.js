@@ -95,7 +95,7 @@ function listRecipes(recipes) {
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
-    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" method="GET" id="ratingForm"><input class="hidden" value="${id}" type="number" name="api_id"><button class="rateRecipe">Rate this recipe</button></form></span><span><form class="viewRatingForm" action='/ratings'></form></span><br><div class="recipeImage row justify-content-center"><img src=${image} alt="${title}" class="foodImg"></div></li><br>`
+    let tempRecipeHTML = `<li id="${id}"><a class="title" href=${sourceUrl} target="_blank">${title}</a><span class="vegetarian hidden">Vegetarian</span><span class="vegan hidden">Vegan</span><button class="favoriteButton"></button><span><form action="/ratings/rate" method="GET" id="ratingForm"><input class="hidden" value="${id}" type="number" name="api_id"><button>Rate this recipe</button></form></span><span><form class="viewRatingForm" action='/ratings'></form></span><br><div class="recipeImage row justify-content-center"><img src=${image} alt="${title}" class="foodImg"></div></li><br>`
 
     $recipeList.append(tempRecipeHTML)
 
@@ -198,7 +198,7 @@ async function toggle_view_rating() {
         let button = all_view_ratings_buttons[i]
         let id = button.parentNode.parentNode.id
         if(all_rated_ids.includes(parseInt(id))){
-            $(`#${id} > span > .viewRatingForm`).append(`<button class='viewRatingsForm' name='api_id' value=${id}>View ratings</button>`)
+            $(`#${id} > .viewRatingForm`).append(`<button name='api_id' value=${id}>View ratings</button>`)
         }
     }
 }

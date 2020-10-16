@@ -6,35 +6,39 @@
         <h2 class="join-message col-12 text-center">Start using your food efficiently</h2>
         <br>
     </div>
+
     <div class="row">
-        <div class="col-4">
-        </div>
+        <div class="col-4"></div>
         <div class="col-4 w-100">
-        <form method="POST" id="user_form">
-            {{ form.hidden_tag() }}
+            <form method="POST" id="user_form">
+                {{ form.hidden_tag() }}
 
-            {% for field in form if field.widget.input_type != 'hidden' %}
-                {% for error in field.errors %}
-                    <span class="text-danger">{{ error }}</span>
+                {% for field in form if field.widget.input_type != 'hidden' %}
+                    {% for error in field.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ field(placeholder=field.label.text, class="form-control") }}
                 {% endfor %}
-                {{ field(placeholder=field.label.text, class="form-control") }}
-            {% endfor %}
 
-            <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
-        </form>
+                <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
+            </form>
         </div>
-        <div class="col-4 w-25">
-        </div>
+
+        <div class="col-4 w-25"></div>
     </div>
+
     <div class="row">
         <br>
     </div>
+
     <div class="row justify-content-md-center" id="siteDescription">
         <div class="col-4"></div>
         <h3 class="text-center">What is Use My Food?</h3>
         <div class="col-4"></div>
     </div>
     <br>
+    
     <div class="row justify-content-md-center">
         <div class="col-4"></div>
         <div class="col-4">
