@@ -14,6 +14,7 @@
     <link rel="shortcut icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/stylesheets/food_boostrap.css">
 </head>
+
 <body style="background-color:#FFFAE0">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary shadow-sm">
@@ -33,18 +34,23 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/users/{{ g.user.id }}/ratings">My Ratings</a>
             </li>
+
             <li class="nav-item active">
                 <a class="nav-link" href="/users/{{ g.user.id }}/favorites">Favorites</a>
             </li>
+
             <li class="nav-item active">
                 <a class="nav-link" href="/converter">Converter</a>
             </li>
+
             <form class="form-inline my-2 my-lg-0" action="/search" method="POST" role="form" id="search-by-recipe">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search for recipes" aria-label="Search for recipes" id="search-term" name="searchRecipeTerm">
                 <button class="btn btn-outline-dark my-2 my-sm-0 Submit" type="submit" href="#">Search</button>
             </form>
+
             {% endif %}
         </ul>
+
         <ul class="navbar-nav ml-auto">
             {% if not g.user %}
                 <li class="nav-item active">
@@ -69,19 +75,22 @@
 
 <div class="container-fluid h-100%" id="content">
     {% for category, message in get_flashed_messages(with_categories=True) %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
+        <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %}
-    <div id="content-wrap">
-    {% block content %}
 
-    {% endblock %}
+    <div id="content-wrap">
+        {% block content %}
+
+        {% endblock %}
     </div>
     <br>
+    
     <div class="text-muted bg-secondary" id="footer">
         <span>Data gathered from the <a href="https://spoonacular.com/food-api" target="_blank">Spoonacular
                 API</a></span>
     </div>
 </div>
+
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

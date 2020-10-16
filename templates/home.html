@@ -4,21 +4,22 @@
 {% block content %}
 
 {% if g.user %}
-<div class="row justify-content-center" id="mainSearch">
+<div class="row justify-content-center">
     <div class="col-2"></div>
     <div class="col-8 shadow" id="search-forms">
         <div class="w-45 side-by-side">
-        <form id="search-by-ingredient">
-            <div class="form-group">
-                <label for="searchIngredients">Search for recipes by ingredient(s):</label>
-                <br>
-                <small class="text-muted"><em>Separate multiple ingredients with a comma and space:</em></small>
-                <br>
-                <textarea id="searchIngredients" placeholder="Ex. Onion, bell pepper" name="searchIngredients" class="form-control"></textarea> 
-                <br>   
-            </div>
-        </form> 
+            <form id="search-by-ingredient">
+                <div class="form-group">
+                    <label for="searchIngredients">Search for recipes by ingredient(s):</label>
+                    <br>
+                    <small class="text-muted"><em>Separate multiple ingredients with a comma and space:</em></small>
+                    <br>
+                    <textarea id="searchIngredients" placeholder="Ex. Onion, bell pepper" name="searchIngredients" class="form-control"></textarea> 
+                    <br>   
+                </div>
+            </form> 
         </div>  
+        
         <div class="w-5 side-by-side" id="form-spacer"></div>
         <div class="w-45 side-by-side">
         <span>Number or recipes to choose from:</span>
