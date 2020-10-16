@@ -129,6 +129,45 @@ class UserViewTestCase(TestCase):
             favorites = Favorites.query.filter(Favorites.recipe_id==98765).all()
             self.assertEqual(len(favorites), 1)
             self.assertEqual(favorites[0].user_id, self.testuser_id)
+    
+    def test_remove_favorites(self):
+        self.setup_favorites()
 
+        r = Recipe.query.filter(Recipe.name=="testrecipe1").one()
+        self.assertIsNotNone(r)
 
+        f = Favorites.query.filter(Favorites.user_id==self.testuser_id and Favorites.recipe_id==r.id).one()
 
+        #Make sure the test user has favorited the recipe:
+        self.assertIsNotNone(f)
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser_id
+            
+            resp = c.post('/users/toggle_favorite',
+                          json={"id": r.id}, follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+
+            favorites = Favorites.query.filter(Favorites.recipe_id==r.id).all()
+
+            #the favorite has been removed
+            self.assertEqual(len(favorites), 0)
+
+    def test_unauthenticated_favorite(self):
+        self.setup_favorites()
+
+        r = Recipe.query.filter(Recipe.name=="testrecipe1").one()
+        self.assertIsNotNone(r)
+
+        favorite_count = Favorites.query.count()
+
+        with self.client as c:
+            resp = c.post('/users/toggle_favorite', json={"id": r.id}, follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+
+            self.assertIn("Access unauthorized", str(resp.data))
+
+            # The number of favorites hasn't changed since making the request
+            self.assertEqual(favorite_count, Favorites.query.count())
+    

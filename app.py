@@ -222,6 +222,7 @@ def add_favorite():
     """Toggle a user's favorite, respond to JS with favorited or unfavorited"""
     if not g.user:
         flash("Access unauthorized", 'danger')
+        return redirect('/login')
     
     id = request.json['id']
     response = toggle_favorites(id, g.user.id)

@@ -224,7 +224,6 @@ def toggle_favorites(recipe_id, user_id):
         if fav.recipe_id == recipe_id:
             db.session.delete(fav)
             db.session.commit()
-            print("unfavorited")
             return "unfavorited"
     
     newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
