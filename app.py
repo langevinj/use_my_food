@@ -134,11 +134,7 @@ def user_favorites(user_id):
         if len(rating) != 0:
             has_ratings.append(fav.id)
 
-    rated_recipe_ids = []
-    for rating in user.ratings:
-        rated_recipe_ids.append(rating.recipe_id)
-
-    return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings, rated_recipe_ids=rated_recipe_ids)
+    return render_template('users/favorites.html', user=user, favorites=favorites, has_ratings=has_ratings)
 
 @app.route('/users/<int:user_id>/ratings')
 def user_ratings(user_id):

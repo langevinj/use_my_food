@@ -20,11 +20,6 @@
     display: none;
 }
 
-/* #favoriteButton{
-    width: 4px;
-    height: 4px;
-} */
-
 .favoriteButton > i{
     pointer-events: none;
 }

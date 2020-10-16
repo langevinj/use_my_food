@@ -2,8 +2,9 @@
 {% block title %}Edit rating for {{rating.recipe.name}}{% endblock %}
 
 {% block content %}
+
 <div class="d-flex justify-content-center">
-        <h2>Rate: <a href={{rating.recipe.recipe_url}} target="_blank">{{rating.recipe.name}}</a></h2>  
+    <h2>Rate: <a href={{rating.recipe.recipe_url}} target="_blank">{{rating.recipe.name}}</a></h2>  
 </div>
 
 <div class="d-flex justify-content-center">
@@ -11,19 +12,21 @@
 </div>
 
 <br><br>
+
 <div class="d-flex justify-content-center">
-    <form method="POST" id="recipe_review" action="/ratings/edit" class="align-center">
+    <form method="POST" action="/ratings/edit" class="align-center">
         <input type="range" value="{{rating.rating}}" min="1.0" max="5.0" step="0.5"
-            oninput="this.nextElementSibling.value = this.value" name="rating" id="rating">
+            oninput="this.nextElementSibling.value = this.value" name="rating">
         <output id="rangeOutput"></output>
 
         <br>
         <br>
-        <textarea id="review" rows="5" cols="40" placeholder="Write a review" name="review">{{rating.review}}
-        </textarea>
+        <textarea rows="5" cols="40" placeholder="Write a review" name="review">{{rating.review}}</textarea>
+        
         <input class="hidden" value={{rating.id}} name="rating_id">
         <input class="hidden" value={{rating.user_id}} name="user_id">
         <button class="btn btn-primary btn-lg btn-block">Submit</button>
     </form>
 </div>
+
 {% endblock %}

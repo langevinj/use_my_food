@@ -2,15 +2,18 @@
 {% block title %}Ratings for: {{recipe.name}}{% endblock %}
 
 {% block content %}
+
 <h2>Ratings for: {{recipe.name}}</h2>
 <img src={{recipe.image_url}}>
 <ul>
-{% for rating in recipe.ratings %}
-    <li>
-        <strong>{{rating.rating}}</strong>
-        {{rating.review}}<br>
-        <small class="text-muted rated-by">rated by {{rating.users.username}}</small>
-    </li>
-{% endfor %}
+
+    {% for rating in recipe.ratings %}
+        <li>
+            <strong>{{rating.rating}}</strong>
+            {{rating.review}}<br>
+            <small class="text-muted rated-by">rated by {{rating.users.username}}</small>
+        </li>
+    {% endfor %}
+
 </ul>
 {% endblock %}

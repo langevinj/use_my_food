@@ -230,7 +230,6 @@ $('#convertButton').click(async function(evt){
 
 })
 
-//going to have to change this function to look for the "edit this recipe" tag
 function toggle_all_edit_rating_buttons(){
     let recipes_list = Array.from(document.getElementById('content').querySelectorAll('li'))
 
