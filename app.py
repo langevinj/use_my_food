@@ -27,7 +27,8 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
-########
+
+########################
 #User signup/login/logout
 
 @app.before_request
@@ -50,6 +51,7 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -82,6 +84,7 @@ def signup():
     else:
         return render_template('users/signup.html', form=form)
 
+
 @app.route("/logout")
 def logout():
     """Handle logging out a user."""
@@ -90,6 +93,7 @@ def logout():
 
     flash("You have been logged out, enjoy your meal!", 'success')
     return redirect('/')
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -110,7 +114,7 @@ def login():
     return render_template('users/login.html', form=form)
 
 ##############################################################
-# Basic user routes:
+# User routes:
 
 @app.route('/users/<int:user_id>')
 def user_delete(user_id):
@@ -118,6 +122,20 @@ def user_delete(user_id):
 
     user = User.query.get_or_404(user_id)
     return render_template("users/delete.html", user=user)
+
+
+@app.route('/users/delete', methods=["POST"])
+def delete_user():
+    """Delete a user's account"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+
+    do_logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect('/signup')
 
 
 @app.route('/users/<int:user_id>/favorites')
@@ -151,6 +169,8 @@ def user_ratings(user_id):
 
     return render_template('users/ratings.html', user=user, ratings=ratings, recipes=recipes)
 
+########################################################
+
 @app.route('/ratings/edit', methods=["GET"])
 def edit_rating_form():
     """Allow a user to edit a rating"""
@@ -181,18 +201,7 @@ def edit_rating():
     flash("Review updated", "success")
     return redirect(f'/users/{user_id}/ratings')
 
-@app.route('/users/delete', methods=["POST"])
-def delete_user():
-    """Delete a user's account"""
-    if not g.user:
-        flash("Access unauthorized", 'danger')
-    
-    do_logout()
 
-    db.session.delete(g.user)
-    db.session.commit()
-
-    return redirect('/signup')
 
 ##############################################################
 #Basic favorites routes

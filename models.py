@@ -230,7 +230,6 @@ def toggle_favorites(recipe_id, user_id):
     newFav = Favorites(user_id=user_id, recipe_id=recipe_id)
     db.session.add(newFav)
     db.session.commit()
-    print("favorited")
     return "favorited"
 
 
