@@ -8,9 +8,9 @@
 <ul>
 
     {% for rating in recipe.ratings %}
-        <li>
-            <strong>{{rating.rating}}</strong>
-            {{rating.review}}<br>
+        <li class="rating">
+            <strong class>{{rating.rating}}</strong>
+            <span class="review">{{rating.review}}</span><br>
             <small class="text-muted rated-by">rated by {{rating.users.username}}</small>
         </li>
     {% endfor %}

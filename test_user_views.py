@@ -55,6 +55,8 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
         return resp 
     
+    ##########################
+    
     def test_users_delete_page(self):
         with self.client as c:
             resp = c.get('/users/789')
@@ -62,30 +64,44 @@ class UserViewTestCase(TestCase):
             self.assertIn("abc", str(resp.data))
             self.assertIn("delete", str(resp.data))
     
-    def setup_favorites(self):
-        r1 = Recipe(name="testrecipe1", recipe_url="www.testrecipe1.com", image_url="testrecipe1.jpg", vegetarian=True, vegan=False, api_id=1234)
+    ###########################
+    # Setup functions
+    ###
+    
+    def setup_recipes(self):
+        r1 = Recipe(name="testrecipe1", recipe_url="www.testrecipe1.com",
+                    image_url="testrecipe1.jpg", vegetarian=True, vegan=False, api_id=1234)
         r2 = Recipe(name="testrecipe2", recipe_url="www.testrecipe2.com",
-                        image_url="testrecipe2.jpg", vegetarian=True, vegan=True, api_id=5678)
+                    image_url="testrecipe2.jpg", vegetarian=True, vegan=True, api_id=5678)
         r3 = Recipe(name="testrecipe3", recipe_url="www.testrecipe3.com",
-                        image_url=EXAMPLE_FOOD_IMG, vegetarian=False, vegan=False, api_id=1357)
+                    image_url=EXAMPLE_FOOD_IMG, vegetarian=False, vegan=False, api_id=1357)
         db.session.add_all([r1, r2, r3])
         r1_id = 468
         r1.id = r1_id
         r2_id = 6810
         r2.id = r2_id
         r3_id = 246
-        r3.id = r3_id 
+        r3.id = r3_id
         db.session.commit()
 
+    def setup_favorites(self):
         f1 = Favorites(user_id=self.testuser_id, recipe_id=468)
 
         db.session.add(f1)
         db.session.commit()
     
+    ##########################
+    # Test favorite views
+    ###
+    
     def test_user_show_favorites(self):
+        self.setup_recipes()
         self.setup_favorites()
         
         with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser_id
+
             resp = c.get(f"/users/{self.testuser_id}/favorites")
 
             self.assertEqual(resp.status_code, 200)
@@ -131,6 +147,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(favorites[0].user_id, self.testuser_id)
     
     def test_remove_favorites(self):
+        self.setup_recipes()
         self.setup_favorites()
 
         r = Recipe.query.filter(Recipe.name=="testrecipe1").one()
@@ -155,6 +172,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(len(favorites), 0)
 
     def test_unauthenticated_favorite(self):
+        self.setup_recipes()
         self.setup_favorites()
 
         r = Recipe.query.filter(Recipe.name=="testrecipe1").one()
@@ -170,4 +188,66 @@ class UserViewTestCase(TestCase):
 
             # The number of favorites hasn't changed since making the request
             self.assertEqual(favorite_count, Favorites.query.count())
+    
+    def test_unauthorized_favorites_page_access(self):
+        self.setup_recipes()
+        self.setup_favorites()
+
+        with self.client as c:
+            resp = c.get(f'/users/{self.testuser_id}/favorites', follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 200)
+    
+
+    ########################
+    # Search testing
+    ###
+
+    def test_search_by_recipe(self):
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser_id
+
+            resp = c.post('/search', content_type='multipart/form-data', data={"searchRecipeTerm": "kale"})
+
+            self.assertEqual(resp.status_code, 200)
+
+            self.assertIn("Search: kale", str(resp.data))
+            soup = BeautifulSoup(str(resp.data), 'html.parser')
+            found_recipes = soup.find_all("a", {"class": "title"})
+
+            self.assertEqual(len(found_recipes), 5)
+
+    def test_invalid_term_search_by_recipe(self):
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser_id
+
+            resp = c.post('/search', content_type='multipart/form-data',
+                          data={"searchRecipeTerm": "mshfgaskdfgnasugfa"}, follow_redirects=True)
+            
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("No recipes with this name have been found", str(resp.data))
+    
+    ##########################
+    # Converter testing
+    ###
+
+    def test_show_converter(self):
+        with self.client as c:
+            
+            resp = c.get('/converter')
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("Convert From:", str(resp.data))
+    
+
+
+
+
+
+
+
+
+    
     

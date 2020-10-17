@@ -9,7 +9,8 @@ import os
 from unittest import TestCase
 from sqlalchemy import exc
 
-from models import db, User, Favorites, Rating, Recipe
+from models import db, User, Favorites, Rating, Recipe, toggle_favorites
+
 
 #We will connect to a different database for testing before importing the app
 
@@ -174,24 +175,6 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(f.user_id, self.u1.id)
         self.assertEqual(f.recipe_id, self.r1.id)
 
-    # def test_invalid_user_id_f(self):
-    #     f = Favorites(
-    #         user_id=None,
-    #         recipe_id=self.rid1
-    #     )
-    #     with self.assertRaises(exc.IntegrityError) as context:
-    #         db.session.add(f)
-    #         db.session.commit()
-
-    # def test_invalid_recipe_id_f(self):
-    #     f = Favorites(
-    #         user_id=self.uid1,
-    #         recipe_id=None
-    #     )
-    #     with self.assertRaises(exc.IntegrityError) as context:
-    #         db.session.add(f)
-    #         db.session.commit()
-
     def test_user_favorites(self):
         """Are the user and favorites models connected"""
         self.assertEqual(len(self.u1.favorites), 1)
@@ -236,16 +219,6 @@ class RecipeModelTestCase(TestCase):
             db.session.add(r)
             db.session.commit()
     
-    # def test_invalid_user_id_r(self):
-    #     r = Rating(rating=3,
-    #                user_id=None,
-    #                recipe_id=self.rid1,
-    #                review="This was great!"
-    #                )
-    #     with self.assertRaises(exc.IntegrityError) as context:
-    #         db.session.add(r)
-    #         db.session.commit()
-    
     def test_invalid_recipe_id_r(self):
         r = Rating(rating=3,
                    user_id=self.uid1,
@@ -287,7 +260,7 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(
             self.r1.ratings[0].review, "It tasted alright, needs more salt")
 
-    
+
 
 
 

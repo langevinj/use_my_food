@@ -129,6 +129,7 @@ def delete_user():
     """Delete a user's account"""
     if not g.user:
         flash("Access unauthorized", 'danger')
+        return redirect('/login')
 
     do_logout()
 
@@ -141,6 +142,10 @@ def delete_user():
 @app.route('/users/<int:user_id>/favorites')
 def user_favorites(user_id):
     """Display a list of the users favorites"""
+
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+        return redirect('/signup')
 
     user = User.query.get_or_404(user_id)
 
@@ -157,6 +162,9 @@ def user_favorites(user_id):
 @app.route('/users/<int:user_id>/ratings')
 def user_ratings(user_id):
     """Display a list of ratings the user has provided"""
+    if not g.user:
+        flash("Access unauthorized", 'danger')
+        return redirect('/login')
 
     user = User.query.get_or_404(user_id)
 
@@ -239,7 +247,7 @@ def search_by_recipe():
     search_term = request.form['searchRecipeTerm']
 
     #change the number here to change the amount of recipes returned, then search for recipes by recipe name
-    payload = {'query': search_term, 'number': 2, 'addRecipeInformation': 'true', 'apiKey': API_SECRET_KEY}
+    payload = {'query': search_term, 'number': 5, 'addRecipeInformation': 'true', 'apiKey': API_SECRET_KEY}
     resp = requests.get('https://api.spoonacular.com/recipes/complexSearch', params=payload)
 
     search_results = resp.json()['results']
@@ -247,7 +255,7 @@ def search_by_recipe():
     #if no results are found, or if therefore the query is not valid, respond with an error
     if len(search_results) == 0:
         flash("No recipes with this name have been found", 'danger')
-        return redirect('/')
+        return redirect('/login')
 
     #clean up all the information not needed by the page
     recipe_list = json_to_recipe(search_results)
@@ -268,7 +276,6 @@ def json_to_recipe(recipes):
     """Clean up a list of json recipes into a simpler recipe list of objects"""
     recipe_list = []
     for recipe in recipes:
-        # new_recipe = jsonify(name=recipe['title'], recipe_url=recipe['sourceUrl'], image_url=recipe['image'], api_id=recipe['id'], vegetarian=recipe['vegetarian'], vegan=recipe['vegan'])
         new_recipe = {"name": recipe['title'], "recipe_url": recipe['sourceUrl'], "image_url": recipe['image'], "api_id": recipe['id'], "vegetarian": recipe['vegetarian'], "vegan": recipe['vegan']}
         recipe_list.append(new_recipe)
 
@@ -293,7 +300,7 @@ def rating_form():
 
     if not g.user:
         flash("Access unauthorized", 'danger')
-        return redirect('/')
+        return redirect('/login')
 
     recipe = Recipe.query.filter(Recipe.api_id==api_id).first()
     
@@ -315,7 +322,7 @@ def add_rating():
     """Add a rating the to rating DB"""
     if not g.user:
         flash("Access unauthorized", 'danger')
-        return redirect('/')
+        return redirect('/login')
 
     resp = request.form
 
@@ -347,6 +354,10 @@ def show_recipe_ratings():
     api_id = request.args['api_id']
 
     recipe = Recipe.query.filter(Recipe.api_id == api_id).first()
+
+    if not recipe:
+        flash("No recipes with this id", 'danger')
+        return redirect('/')
 
     return render_template('/rating/ratings.html', recipe=recipe)
 

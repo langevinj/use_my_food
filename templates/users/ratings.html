@@ -23,8 +23,8 @@
 
             {% for rating in recipe.ratings %}
                 {% if rating.user_id == user.id %}
-                    <small class="text-muted">My rating: {{rating.rating}}, {{rating.review}}</small>
-                    <form action='/ratings/edit' method="GET">
+                    <small class="text-muted myRating">My rating: {{rating.rating}}, {{rating.review}}</small>
+                    <form action='/ratings/edit' method="GET" class="editRating">
                         <input class="hidden" value={{rating.id}} type="number" name="rating_id">
                         <button>Edit your rating</button>
                     </form>
