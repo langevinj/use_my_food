@@ -146,8 +146,10 @@ $('body').on("click", ".favoriteButton", async function(evt){
 
 //When a page loads, toggle the favorite buttons filled in or not
 async function toggle_favorite_icons(){
-    check_loggedin = $('*:contains("Login")')
-    if (check_loggedin){
+    console.log("ran")
+    check_loggedin = $('a > #login')
+    if (check_loggedin.length != 0){
+        console.log("logged out")
         return
     }
 
@@ -157,7 +159,7 @@ async function toggle_favorite_icons(){
 
     let fav_arr = create_fav_arr(all_fav_recipe_ids)
     let all_fav_buttons = Array.from(document.getElementsByClassName('favoriteButton'))
-
+    console.log(all_fav_buttons)
     //Iterate through all the favorite buttons, changing the icon displayed according to if the recipe is present in the fav_arr
     for(let y=0; y<all_fav_buttons.length;y++){
         let fav_button = all_fav_buttons[y]
