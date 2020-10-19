@@ -24,6 +24,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 app.config['API_SECRET_KEY'] = os.environ.get('API_SECRET_KEY')
+API_SECRET_KEY = os.environ.get('API_SECRET_KEY')
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
