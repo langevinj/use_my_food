@@ -1,13 +1,5 @@
 const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-
 const BASE_URL = "http://127.0.0.1:5000"
-
-
-// $('#search-for-recipes').click(function(evt){
-//     evt.preventDefault()
-//     let rad = $('input[type="radio"][name="optradio"]:checked').val()
-//     let val = parseInt(rad)
-// })
 
 //Click handler for searching by ingredient
 $('#search-for-recipes').click(async function (evt) {
