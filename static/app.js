@@ -2,30 +2,33 @@ const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients
 
 const BASE_URL = "http://127.0.0.1:5000"
 
-$('#search-for-recipes').click(function(evt){
-    evt.preventDefault()
-    let rad = $('input[type="radio"][name="optradio"]:checked').val()
-    let val = parseInt(rad)
-})
 
+// $('#search-for-recipes').click(function(evt){
+//     evt.preventDefault()
+//     let rad = $('input[type="radio"][name="optradio"]:checked').val()
+//     let val = parseInt(rad)
+// })
 
+//Click handler for searching by ingredient
 $('#search-for-recipes').click(async function (evt) {
     evt.preventDefault();
-    //remove any previos error from leaving the field empty
-    $('#emptyError').remove()
 
-    //grab all search ingredients and number of desired recipes to return
+    //grab all search ingredients and the number of desired recipes to return
     let ingredients = $('#searchIngredients').val();
     let val = $('input[type="radio"][name="optradio"]:checked').val()
     let numRecipes = parseInt(val)
+
+    //remove any previous errors
+    $('#emptyError').empty()
     
-    //create error if ingredient field is empty
-    if (ingredients == ""){
+    //create an error if ingredient field is empty
+    if (ingredients === ""){
         let emptyError = "<p class='text-danger' id='emptyError'>Please enter at least 1 ingredient</p>"
-        $(`${emptyError}`).insertBefore('.dropdown')
+        $(`#emptyError`).append(emptyError)
         return 
     }
 
+    //Prepare a list of ingredients for the query string
     let ingArray = separateIngredients(ingredients);
     let ingStr = ingArray.join(",+")
 
@@ -35,15 +38,15 @@ $('#search-for-recipes').click(async function (evt) {
     listRecipes(recipeInfo)
 })
 
+//Separate comma-separated ingredients and return an array of each
 function separateIngredients(ingredients){
-//Return an array of all ingredients entered
+
     let loweredIng = ingredients.toLowerCase()
     let array = loweredIng.split(", ")
     return array
 }
 
-
-//gets extended information on all recipes passed in as 1 object
+//Get extended recipe information from the API, based on the number of recipes desired
 async function getRecipeInfo(recipes){
     let allIds = []
     let x = recipes.data.length
@@ -63,7 +66,7 @@ async function getRecipeInfo(recipes){
     return info
 }
 
-//grab recipe info and append the list to the page
+//Distill only the data required from the response from the API, and clean up each recipe
 function listRecipes(recipes) {
     $('#recipeList').empty()
     let x = recipes.data.length;
@@ -91,7 +94,7 @@ function listRecipes(recipes) {
     toggle_view_rating()
 }
 
-//appends recipes to list
+//Appends a recipe to the page
 function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     let $recipeList = $('#recipeList')
 
@@ -99,6 +102,7 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
 
     $recipeList.append(tempRecipeHTML)
 
+    //makes Vegetarian or Vegan distincitions visible
     if(isVegetarian){
         $(`#${id} .vegetarian`).removeClass("hidden")
     }
@@ -108,10 +112,11 @@ function appendRecipe(id, title, image, sourceUrl, isVegetarian, isVegan){
     }
 }
 
- //toggle a favorite when clicked, save the favorite if not already present
+ //toggle a favorite when clicked, save the favorite to the recipe DB if not already present
 $('body').on("click", ".favoriteButton", async function(evt){
     evt.preventDefault();
-    console.log("clicked")
+
+    //grab all recipe information from the page
     let api_id = evt.target.parentNode.id
     let clicked_button = $(`#${api_id} > .favoriteButton`)
     let image_url = clicked_button.siblings('.recipeImage').find('img').attr('src')
@@ -124,16 +129,15 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
     let id;
 
-    console.log(res)
-
+    //Determine if the user's view is on the favorite's page
     let onFavoritesPage = clicked_button.hasClass('favoritePage')
-    console.log(onFavoritesPage)
+
     if(res){
         id = res.data['id'];
     }
     
+    //toggle a favorite between favorited and not
     let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
-    console.log(toggled)
 
     //switch the favorite button when clicking, if on the favorites page, remove from the DOM
     if(toggled.data == "unfavorited"){
@@ -148,8 +152,9 @@ $('body').on("click", ".favoriteButton", async function(evt){
     }
 })
 
-//This definitely needs to be simplified
+//When a page loads, toggle the favorite buttons filled in or not
 async function toggle_favorite_icons(){
+
     //Get a list of all the api_ids of the current user's favorites
     let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
     let all_fav_recipe_ids = Object.entries(data.data['favIds'])
@@ -161,6 +166,7 @@ async function toggle_favorite_icons(){
     for(let y=0; y<all_fav_buttons.length;y++){
         let fav_button = all_fav_buttons[y]
         let id = fav_button.parentNode.id
+        //fill in favorite icons if they exist for the user
         if(fav_arr.includes(id)){
             $(`#${id} > .favoriteButton`).append('<i class="fas fa-star"></i>')
         } else {
@@ -169,7 +175,7 @@ async function toggle_favorite_icons(){
     }
 }   
 
-//function to clean up the string data of all favorites api_ids
+//Clean up the string data of all favorites to just api_ids
 function create_fav_arr(all_fav_recipe_ids) {
     let raw_arr = []
     for (let i = 0; i < all_fav_recipe_ids.length; i++) {
@@ -187,13 +193,14 @@ function create_fav_arr(all_fav_recipe_ids) {
     return fav_arr
 }
 
+//If a recipe has any ratings in the DB, display the button that allows a user to view its ratings
 async function toggle_view_rating() {
     let data = await axios.get(`${BASE_URL}/ratings/all_recipe_ids`)
     let all_rated_ids = (data.data['ids'])
 
     let all_view_ratings_buttons = Array.from(document.getElementsByClassName('viewRatingForm'))
 
-    //Iterate through all recipes and add "view ratings" button if the recipe has any ratings
+    //Iterate through all recipes and add "view ratings" button
     for(let i=0; i<all_view_ratings_buttons.length;i++){
         let button = all_view_ratings_buttons[i]
         let id = button.parentNode.parentNode.id
@@ -203,16 +210,13 @@ async function toggle_view_rating() {
     }
 }
 
-
-
+//Event listener for the submission of the converter
 $('#convertButton').click(async function(evt){
     evt.preventDefault()
     let sourceIngredient = $('#sourceIngredient').val()
     let sourceAmount = $('#sourceAmount').val()
     let sourceUnit = $('#sourceUnit').val()
     let targetUnit = $('#targetUnit').val()
-
-    console.log(parseFloat(sourceAmount))
 
     //handle an invalid amount input
     if(!parseFloat(sourceAmount)){
@@ -227,9 +231,9 @@ $('#convertButton').click(async function(evt){
         let targetAmount = converted.data['targetAmount']
         $('#convertedAmount').val(targetAmount)
     }
-
 })
 
+//If a user has rated a recipe, hide the "Rate this Recipe" button and allow the user to edit their previous rating
 function toggle_all_edit_rating_buttons(){
     let recipes_list = Array.from(document.getElementById('content').querySelectorAll('li'))
 
@@ -244,7 +248,6 @@ function toggle_all_edit_rating_buttons(){
 }
 
 
-//On loading of page always toggle favorites for recipes
+//On loading of page always toggle favorites and if the user can edit their rating for recipes
 window.onload = toggle_favorite_icons()
-// window.onload = toggle_view_rating()
 window.onload = toggle_all_edit_rating_buttons()
