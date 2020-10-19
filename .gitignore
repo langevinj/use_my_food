@@ -4,3 +4,4 @@ __pycache__/
 secret.py
 config.js
 node_modules/dotenv/
+.env
