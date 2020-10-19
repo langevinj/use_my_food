@@ -15,8 +15,7 @@ BASE_URL = "http://127.0.0.1:5000"
 
 app = Flask(__name__)
 #Get DB_URI from environ variable or, if not set there, user development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgres:///usemyfood_db'))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', "postgres:///usemyfood_db")
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
