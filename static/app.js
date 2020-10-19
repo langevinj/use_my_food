@@ -1,3 +1,8 @@
+require(‘dotenv’).config()
+db.connect({
+    apiKey: process.env.API_SECRET_KEY
+})
+
 const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
 const BASE_URL = "http://127.0.0.1:5000"
 
@@ -25,7 +30,8 @@ $('#search-for-recipes').click(async function (evt) {
     let ingStr = ingArray.join(",+")
 
     //get recipes based on input ingredients
-    let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${config["apiKey"]}`)
+    // let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${config["apiKey"]}`)
+    let res = await axios.get(`${SEARCH_BY_ING_URL}${ingStr}&number=${numRecipes}&apiKey=${process.env.API_SECRET_KEY}`)
     let recipeInfo = await getRecipeInfo(res)
     listRecipes(recipeInfo)
 })
@@ -50,10 +56,13 @@ async function getRecipeInfo(recipes){
     
     let info;
     if (allIds.length == 1){
-        info = await axios.get(`https://api.spoonacular.com/recipes/${allIds[0]}/information?apiKey=${config["apiKey"]}`)
+        // info = await axios.get(`https://api.spoonacular.com/recipes/${allIds[0]}/information?apiKey=${config["apiKey"]}`)
+        info = await axios.get(`https://api.spoonacular.com/recipes/${allIds[0]}/information?apiKey=${process.env.API_SECRET_KEY}`)
+
     } else {
         let ids = allIds.join(",")
-        info = await axios.get(`https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${config["apiKey"]}`)
+        // info = await axios.get(`https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${config["apiKey"]}`)
+        info = await axios.get(`https://api.spoonacular.com/recipes/informationBulk?ids=${ids}&apiKey=${process.env.API_SECRET_KEY}`)
     }
     return info
 }
