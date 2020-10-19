@@ -14,6 +14,7 @@ from forms import UserAddForm, LoginForm
 CURR_USER_KEY = "curr_user"
 
 BASE_URL = "http://127.0.0.1:5000"
+SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients"
 
 app = Flask(__name__)
 #Get DB_URI from environ variable or, if not set there, user development local db.
@@ -408,5 +409,49 @@ def add_recipe_to_db():
         return False 
     else: 
         return {"id": return_recipe.id}
-    
+
+######################################################################
+# Helper requests from JS
+###
+
+@app.route('/ingredient-search', methods=["POST"])
+def search_by_ingredient():
+    """Help json by returning entire recipe search by ingredient"""
+
+    numRecipes = request.json['number']
+    ingStr = request.json['ingStr']
+    payload = {'ingredients': ingStr, 'number': numRecipes, 'apiKey': API_SECRET_KEY}
+    resp = requests.get(f'{SEARCH_BY_ING_URL}', params=payload)
+    data = resp.json()
+    json_response = {"data": data}
+    return json_response
+
+
+# @app.route('/ingredient-search-1-recipe', methods=["POST"])
+# def search_by_ingredient_1_recipe():
+
+@app.route('/ingredient-search-recipes-helper', methods=["POST"])
+def search_by_ingredient_recipe_helper():
+    """Get recipe information from API and return it to app.js"""
+    ids = request.json['ids']
+    payload = {'ids': ids, 'apiKey': API_SECRET_KEY}
+    resp = requests.get(f'https://api.spoonacular.com/recipes/informationBulk', params=payload)
+    data = resp.json()
+    json_response = {"data": data}
+    return json_response
+
+@app.route('/converter-helper', methods=["POST"])
+def convert_helper():
+    """Help JS converter request, send request to API"""
+    sourceIngredient = request.json['sourceIngredient']
+    sourceAmount = request.json['sourceAmount']
+    sourceUnit = request.json['sourceUnit']
+    targetUnit = request.json['targetUnit']
+
+    payload = {"ingredientName": sourceIngredient, "sourceAmount": sourceAmount, "sourceUnit": sourceUnit, "targetUnit": targetUnit, "apiKey": API_SECRET_KEY}
+    resp = requests.get(f'https://api.spoonacular.com/recipes/convert', params=payload)
+    data = resp.json()
+    json_response = {"data": data}
+    return json_response
+
 
