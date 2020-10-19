@@ -146,6 +146,10 @@ $('body').on("click", ".favoriteButton", async function(evt){
 
 //When a page loads, toggle the favorite buttons filled in or not
 async function toggle_favorite_icons(){
+    check_loggedin = $('*:contains("Login")')
+    if (check_loggedin){
+        return
+    }
 
     //Get a list of all the api_ids of the current user's favorites
     let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
@@ -218,6 +222,7 @@ $('#convertButton').click(async function(evt){
     } else if (sourceUnit == targetUnit){
         $('#convertedAmount').val(sourceAmount)
     } else {
+
         let converted = await axios.post(`${BASE_URL}/converter-helper`, json={"sourceIngredient": sourceIngredient, "sourceAmount": sourceAmount, "sourceUnit": sourceUnit, "targetUnit": targetUnit})
 
         let targetAmount = converted.data['data']['targetAmount']
