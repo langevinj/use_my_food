@@ -146,13 +146,10 @@ $('body').on("click", ".favoriteButton", async function(evt){
 
 //When a page loads, toggle the favorite buttons filled in or not
 async function toggle_favorite_icons(){
-    console.log("ran")
-    check_loggedin = $('a > #login')
+    check_loggedin = $('#login')
     if (check_loggedin.length != 0){
-        console.log("logged out")
         return
-    }
-
+    } else {
     //Get a list of all the api_ids of the current user's favorites
     let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
     let all_fav_recipe_ids = Object.entries(data.data['favIds'])
@@ -171,6 +168,7 @@ async function toggle_favorite_icons(){
             $(`#${id} > .favoriteButton`).append('<i class="far fa-star"></i>')
         }
     }
+  }
 }   
 
 //Clean up the string data of all favorites to just api_ids
