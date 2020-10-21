@@ -1,5 +1,4 @@
 const SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-const BASE_URL = "http://127.0.0.1:5000"
 
 //Click handler for searching by ingredient
 $('#search-for-recipes').click(async function (evt) {
@@ -24,7 +23,7 @@ $('#search-for-recipes').click(async function (evt) {
     let ingArray = separateIngredients(ingredients);
     let ingStr = ingArray.join(",+")
 
-    let res = await axios.post(`${BASE_URL}/ingredient-search`, json={"number": numRecipes, "ingStr": ingStr})
+    let res = await axios.post(`/ingredient-search`, json={"number": numRecipes, "ingStr": ingStr})
     let recipeInfo = await getRecipeInfo(res.data['data'])
     listRecipes(recipeInfo)
 })
@@ -53,7 +52,7 @@ async function getRecipeInfo(recipes){
     //     // info = await axios.get(`https://api.spoonacular.com/recipes/${allIds[0]}/information?apiKey=${config["apiKey"]}`)
 
     let ids = allIds.join(",")
-    info = await axios.post(`${BASE_URL}/ingredient-search-recipes-helper`, json={'ids': ids})
+    info = await axios.post(`/ingredient-search-recipes-helper`, json={'ids': ids})
         
     return info.data['data']
 }
@@ -118,7 +117,7 @@ $('body').on("click", ".favoriteButton", async function(evt){
     let vegan = !$(`#${api_id} .vegan`).hasClass('hidden')
 
     //add the recipe to the recipe table, get back recipe.id 
-    let res = await axios.post(`${BASE_URL}/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
+    let res = await axios.post(`/add_recipe`, {"recipe_id": api_id, "image_url": image_url, "name": name, "recipe_url": recipe_url, "vegetarian": vegetarian, "vegan": vegan})
     let id;
 
     //Determine if the user's view is on the favorite's page
@@ -129,7 +128,7 @@ $('body').on("click", ".favoriteButton", async function(evt){
     }
     
     //toggle a favorite between favorited and not
-    let toggled = await axios.post(`${BASE_URL}/users/toggle_favorite`, {"id": id})
+    let toggled = await axios.post(`/users/toggle_favorite`, {"id": id})
 
     //switch the favorite button when clicking, if on the favorites page, remove from the DOM
     if(toggled.data == "unfavorited"){
@@ -151,7 +150,7 @@ async function toggle_favorite_icons(){
         return
     } else {
     //Get a list of all the api_ids of the current user's favorites
-    let data = await axios.get(`${BASE_URL}/users/curruser/favorites`)
+    let data = await axios.get(`/users/curruser/favorites`)
     let all_fav_recipe_ids = Object.entries(data.data['favIds'])
 
     let fav_arr = create_fav_arr(all_fav_recipe_ids)
@@ -190,7 +189,7 @@ function create_fav_arr(all_fav_recipe_ids) {
 
 //If a recipe has any ratings in the DB, display the button that allows a user to view its ratings
 async function toggle_view_rating() {
-    let data = await axios.get(`${BASE_URL}/ratings/all_recipe_ids`)
+    let data = await axios.get(`/ratings/all_recipe_ids`)
     let all_rated_ids = (data.data['ids'])
 
     let all_view_ratings_buttons = Array.from(document.getElementsByClassName('viewRatingForm'))
@@ -222,7 +221,7 @@ $('#convertButton').click(async function(evt){
         $('#convertedAmount').val(sourceAmount)
     } else {
 
-        let converted = await axios.post(`${BASE_URL}/converter-helper`, json={"sourceIngredient": sourceIngredient, "sourceAmount": sourceAmount, "sourceUnit": sourceUnit, "targetUnit": targetUnit})
+        let converted = await axios.post(`/converter-helper`, json={"sourceIngredient": sourceIngredient, "sourceAmount": sourceAmount, "sourceUnit": sourceUnit, "targetUnit": targetUnit})
 
         let targetAmount = converted.data['data']['targetAmount']
         $('#convertedAmount').val(targetAmount)

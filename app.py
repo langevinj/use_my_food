@@ -13,7 +13,7 @@ from forms import UserAddForm, LoginForm
 #remove this eventually
 CURR_USER_KEY = "curr_user"
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = os.environ.get('BASE_URL', "http://127.0.0.1:5000")
 SEARCH_BY_ING_URL = "https://api.spoonacular.com/recipes/findByIngredients"
 
 app = Flask(__name__)
