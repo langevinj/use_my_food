@@ -4,7 +4,7 @@
 {% block content %}
 <h2>{{user.username}}'s Ratings:</h2>
 
-    <ul>
+    <ul class="noBullets">
         {% for recipe in recipes %}
 
             <li id="{{recipe.api_id}}"><a class="title" href={{ recipe.recipe_url }}

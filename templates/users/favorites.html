@@ -4,7 +4,7 @@
 {% block content %}
 <h2>{{user.username}}'s Favorites:</h2>
 
-    <ul>
+    <ul class="noBullets">
         {% for favorite in favorites %}
         <li id="{{favorite.recipe.api_id}}"><a class="title" href={{ favorite.recipe.recipe_url }} target="_blank">{{ favorite.recipe.name }}</a>
 

@@ -18,7 +18,9 @@
 <body style="background-color:#FFFAE0">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary shadow-sm">
-    <a class="navbar-brand" href="/">Use My Food</a>
+    <a class="navbar-brand" href="/">Use My Food
+        <img src="/static/favicon.ico" class="d-inline">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -32,6 +34,10 @@
 
             {% if g.user %}
             <li class="nav-item active">
+                <a class="nav-link" href="/">Search by Ingredient</a>
+            </li>
+
+            <li class="nav-item active">
                 <a class="nav-link" href="/users/{{ g.user.id }}/ratings">My Ratings</a>
             </li>
 
@@ -44,7 +50,7 @@
             </li>
 
             <form class="form-inline my-2 my-lg-0" action="/search" method="POST" role="form" id="search-by-recipe">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search for recipes" aria-label="Search for recipes" id="search-term" name="searchRecipeTerm">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search recipe name" aria-label="Search recipes by name" id="search-term" name="searchRecipeTerm">
                 <button class="btn btn-outline-dark my-2 my-sm-0 Submit" type="submit" href="#">Search</button>
             </form>
 

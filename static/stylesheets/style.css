@@ -121,3 +121,7 @@
         display: none;
     }
 }
+
+#recipeList, .noBullets{
+    list-style: none;
+}
